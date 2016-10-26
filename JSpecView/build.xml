@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="jspecview" basedir="." default="clean">
+	 <description>
+		    A JAVA based JCAMP-DX and XML Spectroscopy Viewer
+	 </description>
+		<!--
+		For the purpose of easier reading the script is divided into following sections:
+
+		  - initialization
+		  - compilation
+		  - jar
+		  - execution
+		  - debugging
+		  - javadoc
+		  - cleanup
+		-->	
+	
+	  <taskdef resource="net/sf/antcontrib/antlib.xml">
+	    <classpath>
+	      <pathelement location="tools/ant-contrib.jar" />
+	    </classpath>
+	  </taskdef>
+
+	<property name="jmol.path" value="../Jmol" />
+
+	  <input message="private property file:" addproperty="Private.propertyFile" defaultValue="none" />
+	  <if><available file="${Private.propertyFile}" /><then>
+	  	<property file="${Private.propertyFile}" />
+		<echo>using ${Private.propertyFile}  ${Private.keystore} ${Private.storetype}</echo>
+	  </then></if>
+
+	<property name="debug" value="off" />
+	<property file="TODO.txt" prefix="TODO.txt" />
+	<property file="build_info.properties"/>
+	<property name="build.number" 		value="${build.major.number}.${build.minor.number}.${build.revision.number}"/>	
+	<property name="src.dir"     		value="src"/>
+	<property name="lib.dir"     		value="libs"/>
+	<property name="bin.dir" 			value="bin"/>
+    <property name="build.dir"   		value="build"/>
+	<property name="jsvlibsrc.dir" 		value="../JSpecViewLib/src"/>
+	<property name="jsvlib.dir" 		value="../JSpecViewLib/bin"/>
+    <property name="extras.dir"         value="extras" />
+    <property name="dist.dir"           value="dist" />
+    <property name="dist.zip"           value="${dist.dir}/jspecview.zip" />
+
+	<property name="selfsign.store" value="certificate/JSVcertificate.store" />
+	<property name="selfsign.storetype" value="jks" />
+	<property name="selfsign.storepass" value="JSV2013" />
+	<property name="selfsign.alias" value="JSVcertificate" />
+	<property name="tsa.url" value="http://timestamp.globalsign.com/scripts/timestamp.dll" />
+
+	<path id="jspecviewlib.classpath">
+        <pathelement location="${jsvlib.dir}"/>
+    </path>
+    <path id="jspecview.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="${lib.dir}/netscape.jar"/>
+    	<!-- pathelement location="${lib.dir}/${itext.jar}"/ -->
+        <path refid="jspecviewlib.classpath"/>
+    </path>
+
+	<target name="current-number">
+		<echo>Current build number:${build.number}</echo>
+	</target>
+
+	<target name="revision">
+	    <propertyfile  file="build_info.properties">
+	    	<entry key="build.revision.number" type="int" operation="+" value="1" pattern="0"/>
+	    </propertyfile>
+	</target>
+
+<!--	
+	<target name="compile">
+        <mkdir dir="${classes.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}"/>
+    </target>
+-->
+
+	<target name="build">
+        <echo message="copying files from ${jmol.path}/src/org/jmol"/>
+	    <delete quiet="true">
+	      <fileset dir="src/org/jmol" includes="**/*.java"/>
+	    </delete>
+        <copy overwrite="true" todir="src/org/jmol" >
+          <fileset dir="${jmol.path}/src/org/jmol">
+            <include name="api/JmolSyncInterface.java" />
+            <include name="api/JSVInterface.java" />
+            <include name="popup/AwtSwing*.java" />
+            <include name="popup/JSSwing*.java" />
+          </fileset>
+        </copy>
+		
+		<if><available file="${Private.propertyFile}" /><then>
+	       <echo message="copying files to ${jmol.path}/srcjsv/jspecview"/>
+		    <delete quiet="true">
+		      <fileset dir="${jmol.path}/srcjsv" includes="**/*"/>
+		    </delete>
+	        <copy overwrite="true" todir="${jmol.path}/srcjsv/jspecview" >
+	          <fileset dir="src/jspecview">
+	            <include name="**/*" />
+	            <exclude name="unused/*" />
+	          </fileset>
+	        <fileset dir="${jsvlibsrc.dir}/jspecview">
+	          <include name="**/*" />
+	          <exclude name="unused/*" />
+	        </fileset>
+	        </copy>
+		</then></if>
+
+		<echo message="getting application icons and resources"/>
+        <mkdir dir="${bin.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${bin.dir}" 
+        	debug="${debug}" includeantruntime="false" 
+        	classpathref="jspecview.classpath"/>
+        <copy todir="${bin.dir}/jspecview/java/icons">
+          <fileset dir="${src.dir}/jspecview/java/icons"/>
+        </copy>
+        <copy todir="${bin.dir}/jspecview/application/icons">
+          <fileset dir="${src.dir}/jspecview/application/icons"/>
+        </copy>
+        <mkdir dir="${bin.dir}/jspecview/application/resources"/>
+        <copy todir="${bin.dir}/jspecview/application/resources">
+          <fileset dir="${src.dir}/jspecview/application/resources"/>
+        </copy>	
+	</target>
+
+	<target name="make-application-jar" description="Make JSpecView application jar" depends="build">
+		<antcall target="revision" />
+        <mkdir dir="${build.dir}"/>
+	    <copy todir="${bin.dir}/jspecview/common" >
+	      <fileset dir="">
+	        <include name="TODO.txt" />
+	      </fileset>
+			  <filterchain>
+			    <striplinecomments>
+			      <comment value="#" />
+			    </striplinecomments>
+			    <linecontains>
+			      <contains value="Jmol.___" />
+			    </linecontains>
+			  </filterchain>
+	    </copy>
+	    <unjar dest="${bin.dir}" src="${lib.dir}/netscape.jar"/>
+        <jar destfile="${build.dir}/${ant.project.name}.app.${build.number}_unsigned.jar" manifest="manifests/application.txt">
+		   	<fileset dir="${bin.dir}">
+		      <include name="**/*"/>
+  		      <exclude name="javajs/swing/**/*"/>
+			  <exclude name="jspecview/*js*/*"/>
+		      <exclude name="jspecview/unused/*"/>
+		   	</fileset>
+        	<fileset dir="${jsvlib.dir}">
+  		      <include name="**/*"/>
+    		  <exclude name="javajs/swing/**/*"/>
+            </fileset>
+        </jar>
+		<copy overwrite="true" file="${build.dir}/${ant.project.name}.app.${build.number}_unsigned.jar"
+			tofile="${build.dir}/JSpecView.jar">
+		</copy>
+		
+	    <antcall target="sign-jar-file">
+	      <param name="sign-jar-file-dir" value="${build.dir}" />
+	      <param name="sign-jar-file-name"  value="JSpecView.jar" />
+	    </antcall>
+
+        <echo message="copying application to ${jmol.path}/jars/JSpecView.jar"/>
+		<copy overwrite="true" file="${build.dir}/JSpecView.jar"
+			tofile="${jmol.path}/jars/JSpecView.jar">
+		</copy>
+
+    </target>
+<!---
+-->
+	<target name="make-applet-jar" description="Make sandbox JSpecView applet jar" depends="build">
+		<antcall target="revision" />
+        <mkdir dir="${build.dir}"/>
+		
+	    <copy todir="${bin.dir}/jspecview/common" >
+	      <fileset dir="">
+	        <include name="TODO.txt" />
+	      </fileset>
+			  <filterchain>
+			    <striplinecomments>
+			      <comment value="#" />
+			    </striplinecomments>
+			    <linecontains>
+			      <contains value="___" />
+			    </linecontains>
+			  </filterchain>
+	    </copy>
+
+	    <unjar dest="${bin.dir}" src="${lib.dir}/netscape.jar"/>
+        <jar destfile="${build.dir}/${ant.project.name}.applet.${build.number}_unsigned.jar" manifest="manifests/applet.txt">
+        	<fileset dir="${bin.dir}">
+        		<exclude name="jspecview/application/**/*"/>
+  		        <exclude name="javajs/swing/**/*"/>
+  			    <exclude name="jspecview/*js*/*"/>
+  		        <exclude name="jspecview/unused/*"/>
+        	</fileset>
+        	<fileset dir="${jsvlib.dir}">
+  		      <include name="**/*"/>
+    		  <exclude name="javajs/swing/**/*"/>
+            </fileset>
+        </jar>		
+		<copy overwrite="true" file="${build.dir}/${ant.project.name}.applet.${build.number}_unsigned.jar"
+			tofile="build/JSpecViewApplet.jar">
+		</copy>
+		
+	    <antcall target="sign-jar-file">
+	      <param name="sign-jar-file-dir" value="${build.dir}" />
+	      <param name="sign-jar-file-name"  value="JSpecViewApplet.jar" />
+	    </antcall>
+
+		<!--
+        <echo message="copying applet to ${jmol.path}/appletfiles/JSpecViewApplet.jar"/>
+		
+		<copy overwrite="true" file="${build.dir}/JSpecViewApplet.jar"
+			tofile="${jmol.path}/appletfiles/JSpecViewApplet.jar">
+		</copy>
+		-->
+
+    </target>
+<!---
+-->
+
+	<target name="make-signed-applet-jar" depends="make-applet-jar" description="Make all-permission JSpecView applet jar">
+    <antcall target="revision" />
+        <mkdir dir="${build.dir}"/>
+	    <unjar dest="${bin.dir}" src="${lib.dir}/netscape.jar"/>
+        <jar destfile="${build.dir}/JSpecViewAppletSigned.jar" manifest="manifests/appletSigned.txt">
+        	<fileset dir="${bin.dir}">
+  		      <exclude name="jspecview/application/**/*"/>
+  		      <exclude name="javajs/swing/**/*"/>
+  			  <exclude name="jspecview/*js*/*"/>
+  		      <exclude name="jspecview/unused/*"/>
+        	</fileset>
+        	<fileset dir="${jsvlib.dir}">
+  		      <include name="**/*"/>
+    		  <exclude name="javajs/swing/**/*"/>
+            </fileset>
+        </jar>    
+		
+	    <antcall target="sign-jar-file">
+	      <param name="sign-jar-file-dir" value="${build.dir}" />
+	      <param name="sign-jar-file-name"  value="JSpecViewAppletSigned.jar" />
+	    </antcall>
+
+		<!--
+        <echo message="copying applet to ${jmol.path}/appletfiles/JSpecViewAppletSigned.jar"/>
+		
+		<copy overwrite="true" file="${build.dir}/JSpecViewAppletSigned.jar"
+			tofile="${jmol.path}/appletfiles/JSpecViewAppletSigned.jar">
+		</copy>
+
+		-->
+
+  	    <delete quiet="true">
+	    	<fileset dir="${build.dir}" includes = "*_unsigned.jar" />
+	    </delete>
+
+  </target>
+<!---
+-->
+
+	<target name="make-distribution-zip-file" depends="make-application-jar,make-applet-jar,make-signed-applet-jar" description="Create jspecview.zip for distribution">
+        <echo message="JSpecView make-distribution-zip-file"/>
+    	<dirname property="dist.dir" file="${applet.jar}" />
+        <mkdir dir="${dist.dir}"/>
+  	    <delete quiet="true">
+	    	<fileset dir="${dist.dir}" includes = "*.*" />
+	    </delete>
+        <jar jarfile="${dist.zip}" compress="${jar.compress}">
+        	<fileset dir="${extras.dir}"/>
+		   	<fileset dir="${build.dir}">
+		      <include name="*.jar"/>
+		   	</fileset>
+	    </jar>
+        <echo message="NOTE! Application has been copied to ${jmol.path}/jars/JSpecView.jar,"/>
+        <echo message="but if you have additional Jmol versions checked out, "/>
+        <echo message="you will need to copy that to those projects as well."/>
+		
+		
+	</target>
+
+
+   	<target name="Run" description="Run the JSecView application" >
+       <java classname="jspecview.application.MainFrame" failonerror="true" fork="yes">
+           <classpath refid="jspecview.classpath"/>
+       </java>
+   	</target>
+
+	<target name="clean" >
+       <delete quiet="true">
+         <fileset dir ="${build.dir}" includes= "**/*.class" />
+         <!-- fileset dir="${build.dir}" includes= "*.jar" 
+         -->
+       </delete>
+    </target>
+
+	  <!-- tools -->
+	  <target name="sign-jar-file" >
+	    <if><available file="${Private.propertyFile}" /><then>
+	      	<echo>using keystore="${Private.keystore}" alias="${Private.alias}"</echo> 
+	        <signjar keystore="${Private.keystore}"
+	                 storetype="${Private.storetype}"
+	                 storepass="${Private.storepass}"
+	                 keypass="${Private.keypass}"
+	                 alias="${Private.alias}"
+	                 tsaurl="${tsa.url}">
+	          <fileset dir="${sign-jar-file-dir}" >
+	            <include name="${sign-jar-file-name}" />
+	          </fileset>
+	        </signjar>
+	    </then><else>
+		        <signjar keystore="${selfsign.store}"
+	                     storetype="${selfsign.storetype}"
+		                 storepass="${selfsign.storepass}"
+		                 alias="${selfsign.alias}">
+		            <fileset dir="${sign-jar-file-dir}" >
+		              <include name="${sign-jar-file-name}" />
+		            </fileset>
+		        </signjar>
+		</else></if>
+	    <!-- to verify that a .jar file is signed: jarsigner -verify foo.jar -->
+	  </target>
+
+</project>

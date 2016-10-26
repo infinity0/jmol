@@ -1,0 +1,30 @@
+<project name="JSmol" default="zip" basedir=".">
+	
+   <target name="zip" id="zip">
+   	
+   	<echo>creating distribution zip file minimum jsmol installation</echo>
+  	<delete file="dist/jsmolmin.zip" />
+  	<delete dir="dist/tmp" />
+   	<copy todir="dist/tmp" includeEmptyDirs="false">
+      <fileset dir="site/jsmol">
+      	<include name="**/*" />
+        <exclude name="*.html" />
+        <exclude name="*.htm" />
+        <exclude name="data/**/*" />
+        <exclude name="flot/**/*" />
+        <exclude name="inchi/**/*" />
+        <exclude name="java/**/*" />
+        <exclude name="jcse/**/*" />
+        <exclude name="jquery/**/*" />
+        <exclude name="js/**/*" />
+        <exclude name="jsme/**/*" />
+        <exclude name="spt/**/*" />
+        <exclude name="j2s/JSV/**/*" />
+        <exclude name="j2s/core/*jsv*" />      	
+      </fileset>
+    </copy>
+   	<zip zipfile="dist/jsmolmin.zip" basedir="dist/tmp" includes="**" />
+  	<delete dir="dist/tmp" />
+  </target>
+
+</project>

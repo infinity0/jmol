@@ -1,0 +1,51 @@
+<project name="JSmol" default="fromAstex" basedir=".">
+	
+	<property name="astex.path" value="../AstexJS" />
+
+	<!-- 
+
+	OpenAstexView testing 
+	
+            - Bob Hanson July 8, 2014.
+	 -->
+
+  <target name="fromAstex" id="fromAstex">
+  	
+  	<echo>deleting all files in src/astex</echo>
+    <delete quiet="true">
+      <fileset dir="bin/astex" includes="**/*"/>
+      <fileset dir="src/astex" includes="**/*"/>
+    </delete>
+  	
+  	<echo>copying files from ${astex.path}</echo>
+  	<copy overwrite="true" todir="src/astex" >
+      <fileset dir="${astex.path}/src/astex">
+        <include name="**/*.java" />
+        <exclude name="awt/*"/>
+        <exclude name="design/*"/>
+        <exclude name="movie"/>
+        <exclude name="xmt/*"/>
+        <!-- exclude name="io/StarMMCif.java"/  -->
+        <exclude name="io/SeggerReader.java"/>
+        <exclude name="AstexCmd.java"/>
+        <exclude name="MoleculeViewer.java"/>
+        <exclude name="MoleculeViewerApplet.java"/>
+      </fileset>
+    </copy>
+  	<copy overwrite="true" todir="src" >
+      <fileset dir="${astex.path}/src">
+        <include name="com/**/*.java"/>
+        <include name="java_cup/runtime/*.java"/>
+        <include name="java/awt/*.java"/>
+      </fileset>
+    </copy>
+  	
+	<echo>replacing "return yy_buffer["  with "return (int)yy_buffer[" in Yylex.java </echo>
+  	<replace dir="src/astex/parser" includes="Yylex.java" token="return yy_buffer[" value="return (int) yy_buffer[" />
+
+
+   	<echo>Now run build_23_tojs_astex.xml to compile JSmol with JSpecView and Astex</echo>
+
+  </target>
+	
+</project>

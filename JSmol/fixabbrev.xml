@@ -1,0 +1,81 @@
+<project name="JSmol" default="fix" basedir=".">
+
+   <property name="dir" value="../Jmol/srcjs" />
+   <target name="fix" id="fix">
+   	<replace dir="${dir}" includes="**/*.js" token="$_A(" value="Clazz.newArray("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_Ab(" value="Clazz.newBooleanArray("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_AB(" value="Clazz.newByteArray("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_AC(" value="Clazz.newCharArray("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_AD(" value="Clazz.newDoubleArray("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_AF(" value="Clazz.newFloatArray("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_AI(" value="Clazz.newIntArray("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_AL(" value="Clazz.newLongArray("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_AS(" value="Clazz.newShortArray("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_B(" value="Clazz.prepareCallback("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_C(" value="Clazz.decorateAsClass("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_D(" value="Clazz.isClassDefined("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_E(" value="Clazz.defineEnumConstant("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_F(" value="Clazz.cloneFinals("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_G(" value="Clazz.inheritArgs("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_H(" value="Clazz.pu$h("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_I(" value="Clazz.declareInterface("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_J(" value="Clazz.declarePackage("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_K(" value="Clazz.makeConstructor("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_k(" value="Clazz.overrideConstructor("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_L(" value="Clazz.load("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_M(" value="Clazz.defineMethod("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_N(" value="Clazz.innerTypeInstance("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_O(" value="Clazz.instanceOf("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_P(" value="Clazz.p0p("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_Q(" value="Clazz.makeFunction("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_R(" value="Clazz.superConstructor("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_S(" value="Clazz.defineStatics("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_s(" value="Clazz.registerSerializableFields("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_T(" value="Clazz.declareType("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_U(" value="Clazz.superCall("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_V(" value="Clazz.overrideMethod("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_W(" value="Clazz.declareAnonymous("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_X(" value="Clazz.checkPrivateMethod("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_Y(" value="Clazz.prepareFields("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_Z(" value="Clazz.instantialize("/>
+
+   	<replace dir="${dir}" includes="**/*.js" token="$_A (" value="Clazz.newArray("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_Ab (" value="Clazz.newBooleanArray("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_AB (" value="Clazz.newByteArray("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_AC (" value="Clazz.newCharArray("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_AD (" value="Clazz.newDoubleArray("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_AF (" value="Clazz.newFloatArray("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_AI (" value="Clazz.newIntArray("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_AL (" value="Clazz.newLongArray("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_AS (" value="Clazz.newShortArray("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_B (" value="Clazz.prepareCallback("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_C (" value="Clazz.decorateAsClass("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_D (" value="Clazz.isClassDefined("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_E (" value="Clazz.defineEnumConstant("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_F (" value="Clazz.cloneFinals("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_G (" value="Clazz.inheritArgs("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_H (" value="Clazz.pu$h("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_I (" value="Clazz.declareInterface("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_J (" value="Clazz.declarePackage("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_K (" value="Clazz.makeConstructor("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_k (" value="Clazz.overrideConstructor("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_L (" value="Clazz.load("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_M (" value="Clazz.defineMethod("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_N (" value="Clazz.innerTypeInstance("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_O (" value="Clazz.instanceOf("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_P (" value="Clazz.p0p("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_Q (" value="Clazz.makeFunction("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_R (" value="Clazz.superConstructor("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_S (" value="Clazz.defineStatics("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_s (" value="Clazz.registerSerializableFields("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_T (" value="Clazz.declareType("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_U (" value="Clazz.superCall("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_V (" value="Clazz.overrideMethod("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_W (" value="Clazz.declareAnonymous("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_X (" value="Clazz.checkPrivateMethod("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_Y (" value="Clazz.prepareFields("/>
+   	<replace dir="${dir}" includes="**/*.js" token="$_Z (" value="Clazz.instantialize("/>
+
+  </target>
+
+</project>

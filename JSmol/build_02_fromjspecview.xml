@@ -1,0 +1,73 @@
+<project name="JSmol" default="fromJSV" basedir=".">
+	
+	<property name="jsv.path" value="../JSpecView" />
+
+	<!-- 
+
+	JSpecView and JspecViewLib classes are added, all to src/jspecview
+	
+            - Bob Hanson October 10, 2013.
+	 -->
+
+  <target name="fromJSV" id="fromJSV">
+  	
+  	<echo>deleting all files in src/jspecview|javajs/swing and bin/jspecview|javajs/swing</echo>
+    <delete quiet="true">
+      <fileset dir="bin/jspecview" includes="**/*"/>
+      <fileset dir="src/jspecview" includes="**/*"/>
+    </delete>
+  	
+ 	<echo>copying files from ${jsv.path}Lib</echo>
+    <copy overwrite="true" todir="src/jspecview" >
+      <fileset dir="${jsv.path}Lib/src/jspecview">
+        <include name="**/*" />
+      </fileset>
+    </copy>
+
+  	<echo>copying files from ${jsv.path}</echo>
+  	<copy overwrite="true" todir="src/jspecview" >
+      <fileset dir="${jsv.path}/src/jspecview">
+        <include name="**/*.java" />
+        <exclude name="**/applet/*"/>
+        <exclude name="**/application/*"/>
+        <exclude name="**/java/*"/>
+      	<exclude name="**/unused/*"/>
+      </fileset>
+    </copy>
+  	
+    <copy todir="src/jspecview/common" >
+      <fileset dir="${jsv.path}">
+        <include name="TODO.txt" />
+      </fileset>
+		  <filterchain>
+		    <striplinecomments>
+		      <comment value="#" />
+		    </striplinecomments>
+		    <linecontains>
+		      <contains value="Jmol.___" />
+		    </linecontains>
+		  </filterchain>
+    </copy>
+
+ 	<echo>...adding JSpecView jar files</echo>
+  	<copy todir="jnlp">
+  	  <fileset dir="${jsv.path}/build">
+  	    <include name="JSpecViewApplet*.jar" />
+  	  </fileset>
+	</copy>
+
+   	<echo>...adding JSV/export/resources files</echo>
+   		<copy todir="src/jspecview/export/resources" >
+      <fileset dir="${jsv.path}Lib/src/jspecview/export/resources">
+        <include name="*.vm" />
+      </fileset>
+    </copy>
+
+
+   	<echo>Now refresh the JSmol project and then run build_03_tojs.xml to compile JSmol with JSpecView</echo>
+   	<echo>(Make sure you have clicked on the project before you use Run... if rerunning build_03, or it will not recompile.)</echo>
+
+
+  </target>
+	
+</project>

@@ -1,0 +1,41 @@
+<project name="JSmol" default="fromJSV" basedir=".">
+	
+	<property name="jsv.path" value="../JSpecView" />
+
+	<!-- 
+
+	JSpecView and JspecViewLib classes are added, all to src/jspecview
+	
+            - Bob Hanson October 10, 2013.
+	 -->
+
+  <target name="fromJSV" id="fromJSV">
+  	
+  	<echo>deleting all files in src/jspecview|javajs/swing and bin/jspecview|javajs/swing</echo>
+    <delete quiet="true">
+      <fileset dir="bin/jspecview" includes="**/*"/>
+      <fileset dir="src/jspecview" includes="**/*"/>
+    </delete>
+  	
+ 	<echo>copying files from ${jsv.path}Lib</echo>
+    <copy overwrite="true" todir="src/jspecview" >
+      <fileset dir="${jsv.path}Lib/src/jspecview">
+        <include name="**/*" />
+      </fileset>
+    </copy>
+
+  	<echo>copying files from ${jsv.path}</echo>
+  	<copy overwrite="true" todir="src/jspecview" >
+      <fileset dir="${jsv.path}/src/jspecview">
+        <include name="**/*.java" />
+        <exclude name="**/applet/*"/>
+        <exclude name="**/application/*"/>
+        <exclude name="**/java/*"/>
+      	<exclude name="**/unused/*"/>
+      </fileset>
+    </copy>
+   	<echo>Now refresh the JSmol project and run build_23_tojs_astex.xml to compile JSmol with JSpecView</echo>
+
+  </target>
+	
+</project>

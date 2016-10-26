@@ -1,0 +1,12 @@
+# Ignore auto-generated files
+/Jmol/appletweb/*.zip
+/Jmol/jars/JSpecView.jar
+/Jmol/srcjsv/jspecview/
+/JSmol/dist/*.zip
+/JSmol/jars/JSpecView.jar
+/JSpecView/build/
+/JSpecView/dist/*.zip
+/JSpecView/doc/
+/JSpecViewLib/src/javajs/
+/JSpecViewLib/src/org/jmol/
+/JSmol/srcjs/javajs/

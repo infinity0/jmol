@@ -1,0 +1,1414 @@
+<project name="JSmol" default="toJs" basedir=".">
+ 
+   <!-- you must have checked out and built the Jmol project prior to running this. -->
+	
+	
+   <property name="jmol.path" value="../Jmol" />
+   <property name="jsv.path" value="../JSpecView" />
+   <property name="astex.path" value="../AstexJS" />
+
+   <target name="toJs" id="toJs">
+  			
+  	<!-- create a NON svn local directory only containing JS files  -->
+  	
+  	<echo>Deleting the site directory.</echo>
+   	 	<delete quiet="true" dir="site" />
+
+   	<echo>creating site/jsmol/j2s</echo>
+   	<echo>...java</echo>
+   	<copy todir="site/jsmol/j2s/java" >
+      <fileset dir="j2s/java">
+        <include name="**/*.js" />
+      </fileset>
+    </copy>
+    <copy overwrite="true" todir="site/jsmol/j2s/java" >
+      <fileset dir="bin/java">
+        <include name="**/*.js" />
+      </fileset>
+    </copy>
+
+   	<echo>...javajs</echo>
+   	<copy todir="site/jsmol/j2s/javajs" >
+        <fileset dir="bin/javajs">
+          <include name="**/*.js" />
+          <exclude name="**/util/**/*" />
+        </fileset>
+    </copy>
+   	
+   	<echo>...J</echo>
+  	<copy todir="site/jsmol/j2s/J" >
+      <fileset dir="bin/org/jmol">
+        <include name="**/*.js" />
+        <exclude name="minimize/**/*" />
+        <exclude name="modelset/**/*" />
+        <exclude name="modelsetbio/**/*" />
+        <exclude name="script/**/*" />
+        <exclude name="scriptext/**/*" />
+        <exclude name="smiles/**/*" />
+        <exclude name="symmetry/**/*" />
+        <exclude name="util/**/*" />
+        <exclude name="viewer/**/*" />
+      </fileset>
+    </copy>
+   	
+   	<echo>...JM (modelset, modelsetbio, minimize)</echo>
+   	<copy todir="site/jsmol/j2s/JM" >
+      <fileset dir="bin/org/jmol/modelset">
+        <include name="**/*.js" />
+      </fileset>
+        <fileset dir="bin/org/jmol/modelsetbio">
+            <include name="**/*.js" />
+        </fileset>
+        <fileset dir="bin/org/jmol/minimize">
+            <include name="**/*.js" />
+        </fileset>
+    </copy>
+   	<rename src="site/jsmol/j2s/JM/forcefield" dest="site/jsmol/j2s/JM/FF" />
+   	
+   	<echo>...JS (script, scriptext, smiles, symmetry)</echo>
+   	<copy todir="site/jsmol/j2s/JS" >
+      <fileset dir="bin/org/jmol/script">
+        <include name="**/*.js" />
+      </fileset>
+        <fileset dir="bin/org/jmol/scriptext">
+            <include name="**/*.js" />
+        </fileset>
+        <fileset dir="bin/org/jmol/smiles">
+          <include name="**/*.js" />
+        </fileset>
+        <fileset dir="bin/org/jmol/symmetry">
+          <include name="**/*.js" />
+        </fileset>
+    </copy>
+   	
+   	<echo>...JU (javajs/utl, org/jmol/util, com/jcraft/jzlib</echo>
+   	<copy todir="site/jsmol/j2s/JU" >
+      <fileset dir="bin/javajs/util">
+        <include name="**/*.js" />
+      </fileset>
+        <fileset dir="bin/org/jmol/util">
+            <include name="**/*.js" />
+        </fileset>
+        <fileset dir="bin/com/jcraft/jzlib">
+          <include name="**/*.js" />
+        </fileset>
+    </copy>
+   	   	
+   	<echo>...JV (viewer)</echo>
+   	<copy todir="site/jsmol/j2s/JV" >
+      <fileset dir="bin/org/jmol/viewer">
+        <include name="**/*.js" />
+      </fileset>
+    </copy>
+   	
+   	<echo>...JSV (JSpecView)</echo>
+   	<copy todir="site/jsmol/j2s/JSV" >
+      <fileset dir="bin/jspecview">
+        <include name="**/*.js" />
+      </fileset>
+    </copy>
+
+    <echo>...astex</echo>
+   	<copy todir="site/jsmol/j2s/astex" >
+        <fileset dir="bin/astex">
+          <include name="**/*.js" />
+        </fileset>
+    </copy>
+   	<echo>...java_cup</echo>
+   	<copy todir="site/jsmol/j2s/java_cup" >
+        <fileset dir="bin/java_cup">
+          <include name="**/*.js" />
+        </fileset>
+    </copy>
+   	
+  	<!-- modify class names -->		
+
+    <echo>removing j2s globals Class and JavaObject</echo>
+    <echo>...replacing Class.forName with Clazz._4Name</echo>
+  	<replace dir="site/jsmol/j2s" includes="**/*.js" token="Class.forName" value="Clazz._4Name"/>
+    <echo>...replacing JavaObject with Clazz._O</echo>
+  	<replace dir="site/jsmol/j2s" includes="**/*.js" token=" JavaObject" value=" Clazz._O"/>
+    <echo>...removing all $fz references for sub/superclass common private function names</echo>
+  	<replace dir="site/jsmol/j2s" includes="**/*.js" token="($fz =" value=""/>
+  	<replace dir="site/jsmol/j2s" includes="**/*.js" token=", $fz.isPrivate = true, $fz)" value=""/>
+  	<echo>...changing Clazz.pu$h() to Clazz.pu$h(self.c$) (only a partial fix)</echo>
+  	<replace dir="site/jsmol/j2s" includes="**/*.js" token="Clazz.pu$h()" value="Clazz.pu$h(self.c$)"/>
+  	<replace dir="site/jsmol/j2s" includes="**/*.js" token="Clazz.pu$h ()" value="Clazz.pu$h(self.c$)"/>
+   	   	
+    <echo>modifying class names to match directories</echo>
+    <echo>...abbreviating class name "org.jmol.modelsetbio" and "org.jmol.modelset" to "JM"</echo>
+  	<replace dir="site/jsmol/j2s" includes="**/*.js" token="org.jmol.modelsetbio" value="JM"/>
+  	<replace dir="site/jsmol/j2s" includes="**/*.js" token="org.jmol.modelset" value="JM"/>
+    <echo>...abbreviating class name "org.jmol.minimize" to "JM"; "org.jmol.minimize.forcefield" to "JM.FF"</echo>
+  	<replace dir="site/jsmol/j2s" includes="**/*.js" token="org.jmol.minimize.forcefield" value="JM.FF"/>
+  	<replace dir="site/jsmol/j2s" includes="**/*.js" token="org/jmol/minimize/forcefield" value="JM/FF"/>
+  	<replace dir="site/jsmol/j2s" includes="**/*.js" token="org.jmol.minimize" value="JM"/>
+
+    <echo>...abbreviating class name "org.jmol.script" and "org.jmol.scriptext" to "JS"</echo>
+  	<replace dir="site/jsmol/j2s" includes="**/*.js" token="org.jmol.scriptext" value="JS"/>
+  	<replace dir="site/jsmol/j2s" includes="**/*.js" token="org.jmol.script" value="JS"/>
+    <echo>...abbreviating class name "org.jmol.smiles" and org.jmol.symmetry to "JS"</echo>
+  	<replace dir="site/jsmol/j2s" includes="**/*.js" token="org.jmol.smiles" value="JS"/>
+  	<replace dir="site/jsmol/j2s" includes="**/*.js" token="org.jmol.symmetry" value="JS"/>
+    <echo>...abbreviating class name "org.jmol.util", "javajs.util", and "com.jcraft.jzlib" to "JU"</echo>
+  	<replace dir="site/jsmol/j2s" includes="**/*.js" token="org.jmol.util" value="JU"/>
+  	<replace dir="site/jsmol/j2s" includes="**/*.js" token="javajs.util" value="JU"/>
+  	<replace dir="site/jsmol/j2s" includes="**/*.js" token="com.jcraft.jzlib" value="JU"/>
+    <echo>...abbreviating class name "org.jmol.viewer" to "JV"</echo>
+  	<replace dir="site/jsmol/j2s" includes="**/*.js" token="org.jmol.viewer" value="JV"/>
+    <echo>...abbreviating class name "org.jmol" to "J"</echo>
+   	<!-- org/jmol is for org/jmol/modelkit, org/jmol/quantum -->
+  	<replace dir="site/jsmol/j2s" includes="**/*.js" token="org.jmol" value="J"/>
+  	<replace dir="site/jsmol/j2s" includes="**/*.js" token="org/jmol" value="J"/>
+  	<echo>...abbreviating class name "jspecview" to "JSV"</echo>
+  	<replace dir="site/jsmol/j2s" includes="**/*.js" token="jspecview" value="JSV"/>
+   	  	   	  	
+
+  	<!-- get version information  -->		
+    <echo>getting Jmol.properties and other resources</echo>
+    <copy todir="site/jsmol/j2s" >
+  	  <fileset dir="">
+  	    <include name="Jmol.properties" />
+  	  </fileset>
+    </copy>
+   	
+   	<copy todir="site/jsmol/j2s/J" >
+  	  <fileset dir="">
+  	    <include name="Jmol.properties" />
+  	  </fileset>
+    </copy>
+   	
+  	<!-- get required non-JavaScript resources -->		
+    <copy todir="site/jsmol/j2s/JM/FF/data" >
+      <fileset dir="${jmol.path}/src/org/jmol/minimize/forcefield/data">
+        <include name="*.txt" />
+      </fileset>
+    </copy>
+    <copy todir="site/jsmol/j2s/J/quantum" >
+      <fileset dir="${jmol.path}/src/org/jmol/quantum">
+        <include name="*.txt" />
+      </fileset>
+    </copy>
+    <copy todir="site/jsmol/j2s/J/modelkit/images">
+      <fileset dir="${jmol.path}/src/org/jmol/modelkit/images">
+        <include name="*" />
+      </fileset>
+    </copy>
+
+  	<!-- get .po files from the Jmol project -->		
+   	<echo>...adding .po files</echo>
+   	<copy overwrite="true" todir="site/jsmol/idioma" >
+	  <fileset dir="${jmol.path}/src/org/jmol/translation/JmolApplet">
+	    <include name="*.po" />
+	  </fileset>
+	</copy>
+
+   	<echo>...adding j2s/img subdirectory</echo>
+  	<copy todir="site/jsmol/j2s/img">
+  	  <fileset dir="img">
+  	    <include name="**/*" />
+  	  </fileset>
+    </copy>
+   	
+   	<echo>...adding astex resources files</echo>
+    <copy todir="site/jsmol/j2s" >
+      <fileset dir="${astex.path}/src">
+        <include name="astex/fonts/**" />
+        <include name="astex/images/**" />
+        <include name="astex/properties/**" />
+      </fileset>
+    </copy>
+
+
+   	<!-- add jspecview files and subdirectories -->
+
+   	<echo>...adding JSV/export/resources files</echo>
+   		<copy todir="site/jsmol/j2s/JSV/export/resources" >
+      <fileset dir="${jsv.path}Lib/src/jspecview/export/resources">
+        <include name="*.vm" />
+      </fileset>
+    </copy>
+
+   	<!-- add jsmol files and subdirectories -->
+
+   	<echo>setting up the main directory and subdirectories</echo>
+   	<echo>...adding html files</echo>
+   	<copy todir="site/jsmol">
+  	  <fileset dir="html">
+  	    <include name="**/*" />
+  	  </fileset>
+      <fileset dir="">
+    	 <include name="README-DOWNLOAD.TXT" />
+      </fileset>
+    </copy>
+
+   	<echo>...adding data files</echo>
+   	<copy todir="site/jsmol/data">
+  	  <fileset dir="data">
+  	    <include name="**/*" />
+  	  </fileset>
+    </copy> 
+   	
+   	<echo>...adding flot</echo>
+   	<copy todir="site/jsmol/flot">
+  	  <fileset dir="lib/flot">
+  	    <include name="**/*" />
+  	  </fileset>
+    </copy>
+ 	
+ 	<echo>...adding Jmol, Astex, and JSpecView jar and jnlp files</echo>
+  	<copy todir="site/jsmol/java">
+  	  <fileset dir="${jmol.path}/build">
+  	    <include name="JmolApplet*.jar" />
+  	  </fileset>
+  	  <fileset dir="${jsv.path}/build">
+  	    <include name="JSpecViewApplet*.jar" />
+  	  </fileset>
+    	  <fileset dir="${astex.path}/dist/lib">
+    	    <include name="OpenAstexViewer.jar" />
+    	  </fileset>
+     	  <fileset dir="jnlp">
+          <include name="*.jnlp" />
+       </fileset>
+   	  <fileset dir="jnlp">
+        <include name="*.jnlp" />
+     </fileset>
+	</copy>
+		
+   	<echo>...adding jQuery and minimizing it</echo>
+  	<copy todir="site/jsmol/jquery">
+  	  <fileset dir="lib/jquery">
+  	    <include name="**/*" />
+  	  </fileset>
+    </copy>
+   	<java jar="jars/closure_compiler.jar" fork="true" dir="site/jsmol/jquery" failonerror="false">
+   		<arg line="--js jquery.js --js_output_file jquery.min.js" />
+    </java>
+
+   	<echo>...adding jsme</echo>
+  	<copy todir="site/jsmol/jsme">
+  	  <fileset dir="lib/jsme">
+  	    <include name="**/*" />
+  	  </fileset>
+    </copy>
+   	<echo>......adding jsme event hooks</echo>
+  	<replace dir="site/jsmol/jsme/jsme" includes="*.html" token="var c=arguments,d;" value="var c=arguments,d;if(!(d=(!c||!c[0]||!$wnd.Jmol?a:$wnd.Jmol._jmeHook(a, c[0]))))return;"/>
+   	
+   	<echo>...adding js subdirectory</echo>
+   	<copy todir="site/jsmol/js">
+  	  <fileset dir="jsmoljs">		
+  	    <include name="**/*" />
+  	  </fileset>
+    </copy> 
+   	
+   	<echo>...adding spt subdirectory</echo>
+   	<copy todir="site/jsmol/spt">
+  	  <fileset dir="spt">
+  	    <include name="**/*" />
+  	  </fileset>
+    </copy> 
+   	
+   	<echo>...adding jsmol.php</echo>
+  	<copy todir="site/jsmol/php">
+  	  <fileset dir="php">
+  	    <include name="**/*" />
+  	  </fileset>
+    </copy>
+  
+   	<!-- make core files -->
+ 
+   	<echo>creating and compressing core files - warnings are OK; "does not exist" is trouble</echo>
+   	<echo>...adding package.js from ${jmol.path}/srcjs/js</echo>
+   	<copy todir="site/jsmol/j2s/core">
+  	  <fileset dir="${jmol.path}/srcjs/js">
+  	    <include name="package.js" />
+  	  </fileset>
+    </copy>
+
+   	<!-- note: any changes in these next sections must be reflected also
+   	             in package.js -->
+   	
+    <property name="javaCoreFiles" value="
+    	java/lang/AbstractStringBuilder.js
+    	java/lang/Enum.js
+    	java/lang/StringBuffer.js
+    	java/lang/StringBuilder.js
+    	java/lang/Thread.js
+    	java/lang/ThreadGroup.js
+    	java/io/BufferedInputStream.js
+    	java/io/BufferedReader.js
+    	java/io/BufferedWriter.js
+    	java/io/ByteArrayInputStream.js
+    	java/io/ByteArrayOutputStream.js
+    	java/io/FilterInputStream.js
+    	java/io/InputStream.js
+    	java/io/InputStreamReader.js
+    	java/io/OutputStream.js
+    	java/io/Reader.js
+    	java/io/StringReader.js
+    	java/io/Writer.js 
+    	java/net/MalformedURLException.js
+    	java/net/URL.js
+    	java/net/URLConnection.js
+    	java/net/URLEncoder.js
+    	java/net/URLStreamHandler.js
+    	java/net/URLStreamHandlerFactory.js
+    	java/text/MessageFormat.js
+    	java/util/AbstractCollection.js
+    	java/util/AbstractList.js
+    	java/util/AbstractMap.js
+    	java/util/AbstractSet.js
+    	java/util/ArrayList.js
+    	java/util/Arrays.js
+    	java/util/Collections.js
+    	java/util/Dictionary.js
+    	java/util/Hashtable.js
+    	java/util/MapEntry.js
+    	java/util/Properties.js
+    	java/util/Random.js
+    	java/util/SortedMap.js
+    	java/util/SortedSet.js
+    	java/util/StringTokenizer.js
+    	javajs/api/BytePoster.js
+    	javajs/api/EventManager.js
+    	javajs/api/FontManager.js
+    	javajs/api/GenericColor.js
+    	javajs/api/GenericFileInterface.js
+		javajs/api/GenericMenuInterface.js
+    	javajs/api/GenericMouseInterface.js
+    	javajs/api/GenericPlatform.js
+    	javajs/api/JSInterface.js
+		javajs/api/JSONEncodable.js
+    	javajs/api/PlatformViewer.js
+    	javajs/api/ZInputStream.js
+    	javajs/awt/Color.js
+    	javajs/awt/Dimension.js
+    	javajs/awt/event/Event.js
+    	javajs/awt/Font.js
+    	JU/A4.js
+    	JU/AjaxURLConnection.js
+    	JU/AjaxURLStreamHandler.js
+    	JU/AjaxURLStreamHandlerFactory.js
+    	JU/AU.js
+    	JU/Base64.js
+    	JU/BS.js
+    	JU/CU.js
+    	JU/DF.js
+    	JU/Encoding.js
+    	JU/Lst.js
+		JU/M34.js
+    	JU/M3.js
+    	JU/M4.js
+    	JU/OC.js
+    	JU/P3.js
+    	JU/P3i.js
+    	JU/P4.js
+    	JU/PT.js
+    	JU/SB.js
+    	JU/T3.js
+    	JU/T3i.js
+    	JU/T4.js
+    	JU/V3.js
+	" />
+
+   	
+   	<property name="astexCoreFiles" value="
+   	    java/awt/Color.js
+   	    java/awt/event/InputEvent.js
+   	    java/awt/event/MouseEvent.js
+   	    java/io/FileOutputStream.js
+   	    java/util/Stack.js
+   	    java/util/Vector.js
+   	    astex/api/AstexCanvas.js
+   	    astex/api/AstexViewerAPI.js
+   	    astex/api/Interface.js
+   	    astex/awtjs2d/Display.js
+   	    astex/awtjs2d/Image.js
+   	    astex/awtjs2d/JSCanvas.js
+   	    astex/awtjs2d/JSFile.js
+   	    astex/awtjs2d/JSFont.js
+   	    astex/awtjs2d/Mouse.js
+   	    astex/awtjs2d/Platform.js
+   	    astex/awtjs2d/ViewerJS.js
+   	    astex/generic/Generic.js
+   	    astex/generic/GenericInterface.js
+   	    astex/GenericApplet.js
+   	    astex/io/FILE.js
+   	    astex/io/MoleculeReader.js
+   	    astex/map/GraphicalObject.js
+   	    astex/map/VolumeMap.js
+   	    astex/model/Angle.js
+   	    astex/model/Atom.js
+   	    astex/model/Bond.js
+   	    astex/model/Chain.js
+   	    astex/model/Distance.js
+   	    astex/model/Molecule.js
+   	    astex/model/Residue.js
+   	    astex/model/ResidueIterator.js
+   	    astex/model/Ring.js
+   	    astex/model/SecondaryStructure.js
+   	    astex/model/Selectable.js
+   	    astex/model/Selection.js
+   	    astex/model/Symmetry.js
+   	    astex/MoleculeViewerAppletJS.js
+   	    astex/parser/Parser.js
+   	    astex/parser/Yylex.js
+   	    astex/render/AstexLogo.js
+   	    astex/render/MoleculeRenderer.js
+   	    astex/render/MoleculeRendererListener.js
+   	    astex/render/Renderer.js
+   	    astex/render/RendererEvent.js
+   	    astex/render/Texture.js
+   	    astex/render/Tmesh.js
+   	    astex/render/Vertex.js
+   	    astex/util/Arguments.js
+   	    astex/util/AtomicElement.js
+   	    astex/util/AtomIterator.js
+   	    astex/util/BondIterator.js
+   	    astex/util/Color32.js
+   	    astex/util/DefaultLogger.js
+   	    astex/util/DoubleArray.js
+   	    astex/util/DynamicArray.js
+   	    astex/util/FloatArray.js
+   	    astex/util/Format.js
+   	    astex/util/Geometry.js
+   	    astex/util/Improper.js
+   	    astex/util/IntArray.js
+   	    astex/util/Lattice.js
+   	    astex/util/Light.js
+   	    astex/util/Log.js
+   	    astex/util/Logger.js
+   	    astex/util/LoggerInterface.js
+   	    astex/util/Matrix.js
+   	    astex/util/Mmatch.js
+   	    astex/util/PeriodicTable.js
+   	    astex/util/Point3d.js
+   	    astex/util/Properties.js
+   	    astex/util/Settings.js
+   	    astex/util/Util.js
+   	    astex/viewer/Viewer.js
+   	    java_cup/runtime/lr_parser.js
+   	    java_cup/runtime/Scanner.js
+   	    java_cup/runtime/Symbol.js
+   	    java_cup/runtime/virtual_parse_stack.js
+   	    javajs/api/BytePoster.js
+   	    javajs/api/EventManager.js
+   	    javajs/api/FontManager.js
+   	    javajs/api/GenericFileInterface.js
+   	    javajs/api/GenericLineReader.js
+   	    javajs/api/GenericMouseInterface.js
+   	    javajs/api/GenericPlatform.js
+   	    javajs/api/Interface.js
+   	    javajs/api/JSInterface.js
+   	    javajs/api/JSONEncodable.js
+   	    javajs/api/PlatformViewer.js
+   	    javajs/awt/Dimension.js
+   	    javajs/awt/event/Event.js
+   	    JU/AjaxURLConnection.js
+   	    JU/AjaxURLStreamHandler.js
+   	    JU/AjaxURLStreamHandlerFactory.js
+   	    JU/Rdr.js
+	" />
+   	
+    <property name="jmolCoreFiles" value="
+    	javajs/api/GenericBinaryDocument.js
+        javajs/api/GenericZipTools.js
+        javajs/api/GenericLineReader.js
+        javajs/api/GenericCifDataParser.js
+    	javajs/api/Interface.js
+    	JU/BArray.js
+		JU/LimitedLineReader.js
+    	JU/Matrix.js
+    	JU/Quat.js
+    	JU/Rdr.js
+    	JU/T3d.js
+    	JU/V3d.js
+    	J/adapter/readers/molxyz/MolReader.js
+		J/adapter/readers/molxyz/XyzReader.js
+		J/adapter/smarter/Atom.js
+		J/adapter/smarter/AtomIterator.js
+		J/adapter/smarter/AtomSetCollection.js
+		J/adapter/smarter/AtomSetCollectionReader.js
+		J/adapter/smarter/AtomSetObject.js
+		J/adapter/smarter/Bond.js
+		J/adapter/smarter/BondIterator.js
+		J/adapter/smarter/Resolver.js
+		J/adapter/smarter/SmarterJmolAdapter.js
+		J/adapter/smarter/StructureIterator.js
+		J/api/AtomIndexIterator.js
+		J/api/Interface.js
+		J/api/JmolAdapter.js
+		J/api/JmolAdapterAtomIterator.js
+		J/api/JmolAdapterBondIterator.js
+		J/api/JmolAdapterStructureIterator.js
+		J/api/JmolAppConsoleInterface.js
+		J/api/JmolAppletInterface.js
+		J/api/JmolCallbackListener.js
+    	J/api/JmolAnnotationParser.js
+		J/api/JmolGraphicsInterface.js
+		J/api/JmolMeasurementClient.js
+		J/api/JmolModulationSet.js
+		J/api/JmolNavigatorInterface.js
+		J/api/JmolRendererInterface.js
+		J/api/JmolRepaintManager.js
+		J/api/JmolStatusListener.js
+		J/api/JmolSyncInterface.js
+		J/api/JmolViewer.js
+    	J/api/JmolZipUtilities.js
+    	J/api/Translator.js
+		J/appletjs/Jmol.js
+		J/atomdata/AtomData.js
+    	J/atomdata/AtomDataServer.js
+		J/atomdata/RadiusData.js
+		J/awtjs/Image.js
+		J/awtjs/JSFont.js
+		J/awtjs/Platform.js
+		J/awtjs2d/Display.js
+		J/awtjs2d/Image.js
+		J/awtjs2d/JSFile.js
+		J/awtjs2d/JSFont.js
+		J/awtjs2d/Mouse.js
+		J/awtjs2d/Platform.js
+		J/bspt/Bspf.js
+		J/bspt/Bspt.js
+		J/bspt/CubeIterator.js
+		J/bspt/Element.js
+		J/bspt/Leaf.js
+		J/bspt/Node.js
+		J/c/ANIM.js
+		J/c/AXES.js
+		J/c/CBK.js
+		J/c/FIL.js
+		J/c/PAL.js
+		J/c/QS.js
+		J/c/STER.js
+		J/c/STR.js
+		J/c/VDW.js
+		J/g3d/CylinderRenderer.js
+		J/g3d/G3DRenderer.js
+		J/g3d/Graphics3D.js
+		J/g3d/ImageRenderer.js
+		J/g3d/LineRenderer.js
+		J/g3d/Pixelator.js
+		J/g3d/PixelatorShaded.js
+		J/g3d/Platform3D.js
+		J/g3d/SphereRenderer.js
+		J/g3d/TextRenderer.js
+		J/g3d/TextSorter.js
+		J/g3d/TextString.js
+		J/g3d/TriangleRenderer.js
+		J/i18n/GT.js
+		J/i18n/Language.js
+		J/i18n/Resource.js
+		J/io/FileReader.js
+		J/io/JmolBinary.js
+		J/render/BallsRenderer.js
+		J/render/FontLineShapeRenderer.js
+		J/render/FrankRenderer.js
+		J/render/RepaintManager.js
+		J/render/ShapeRenderer.js
+		J/render/SticksRenderer.js
+		JS/ContextToken.js
+		JS/ScriptContext.js
+		JS/ScriptException.js
+		JS/SV.js
+		JS/T.js
+		J/shape/AtomShape.js
+		J/shape/Balls.js
+		J/shape/FontLineShape.js
+		J/shape/FontShape.js
+		J/shape/Frank.js
+		J/shape/Shape.js
+		J/shape/Sticks.js
+		J/thread/HoverWatcherThread.js
+		J/thread/JmolThread.js
+		J/thread/TimeoutThread.js
+		JM/Atom.js
+		JM/AtomCollection.js
+		JM/AtomIteratorWithinModel.js
+		JM/AtomIteratorWithinModelSet.js
+		JM/Bond.js
+		JM/BondCollection.js
+		JM/BondIterator.js
+		JM/BondIteratorSelected.js
+		JM/BondSet.js
+		JM/Chain.js
+		JM/Group.js
+		JM/HBond.js
+		JM/LabelToken.js
+		JM/Measurement.js
+		JM/MeasurementData.js
+		JM/MeasurementPending.js
+		JM/Model.js
+		JM/ModelLoader.js
+		JM/ModelSet.js
+		JM/Orientation.js
+		JM/StateScript.js
+		JM/TickInfo.js
+		JU/BoxInfo.js
+		JU/BSUtil.js
+		JU/C.js
+		JU/ColorEncoder.js
+		JU/CommandHistory.js
+		JU/DefaultLogger.js
+		JU/Elements.js
+		JU/Escape.js
+		JU/GData.js
+		JU/GenericApplet.js
+		JU/Geodesic.js
+		JU/Int2IntHash.js
+		JU/Node.js
+		JU/BNode.js
+		JU/Edge.js
+    	JU/JmolMolecule.js
+		JU/Logger.js
+		JU/LoggerInterface.js
+		JU/Measure.js
+		JU/MeshSurface.js
+		JU/Normix.js
+		JU/Parser.js
+		JU/Point3fi.js
+		JU/Rectangle.js
+		JU/Rgb16.js
+		JU/Shader.js
+		JU/SimpleUnitCell.js
+		JU/TempArray.js
+		JU/Txt.js
+		JU/Vibration.js
+		JV/ActionManager.js
+		JV/AnimationManager.js
+		JV/binding/Binding.js
+		JV/binding/DragBinding.js
+		JV/binding/JmolBinding.js
+		JV/ColorManager.js
+		JV/FileManager.js
+		JV/GlobalSettings.js
+		JV/JC.js
+		JV/JmolAsyncException.js
+		JV/ModelManager.js
+		JV/MouseState.js
+		JV/SelectionManager.js
+		JV/ShapeManager.js
+		JV/StateManager.js
+		JV/StatusManager.js
+		JV/TransformManager.js
+		JV/Viewer.js
+    	" />
+
+    <property name="jsvCoreFiles" value="
+    	J/api/JmolJDXMOLParser.js
+    	J/api/JmolJDXMOLReader.js
+    	J/jsv/JDXMOLParser.js
+		JSV/api/AnnotationData.js 
+		JSV/api/AppletFrame.js 
+		JSV/api/JSVAppInterface.js 
+		JSV/api/JSVAppletInterface.js 
+		JSV/api/JSVFileHelper.js
+		JSV/api/JSVGraphics.js
+		JSV/api/JSVMainPanel.js
+		JSV/api/JSVPanel.js 
+		JSV/api/JSVTree.js
+		JSV/api/JSVTreeNode.js
+		JSV/api/JSVTreePath.js
+		JSV/api/JSVViewPanel.js
+		JSV/api/JSVZipReader.js
+		JSV/api/PanelListener.js 
+		JSV/api/ScriptInterface.js 
+		JSV/app/JSVApp.js
+    	JSV/app/GenericMouse.js
+		JSV/appletjs/JSVApplet.js
+		JSV/common/Annotation.js
+		JSV/common/ColoredAnnotation.js
+		JSV/common/ColorParameters.js
+		JSV/common/CoordComparator.js 
+		JSV/common/Coordinate.js
+		JSV/common/ExportType.js
+		JSV/common/GraphSet.js
+		JSV/common/ImageView.js
+		JSV/common/Integral.js
+		JSV/common/IntegralComparator.js
+		JSV/common/IntegralData.js
+		JSV/common/Spectrum.js 
+		JSV/common/JSVersion.js
+		JSV/common/JSVFileManager.js
+		JSV/common/JSViewer.js
+		JSV/common/Measurement.js 
+		JSV/common/MeasurementData.js
+		JSV/common/PanelData.js
+		JSV/common/PanelNode.js
+		JSV/common/Parameters.js
+		JSV/common/PeakData.js
+		JSV/common/PeakInfo.js
+		JSV/common/PeakPick.js
+		JSV/common/PeakPickEvent.js
+		JSV/common/PlotWidget.js
+		JSV/common/PrintLayout.js
+		JSV/common/RepaintManager.js
+		JSV/common/ScaleData.js
+		JSV/common/ScriptToken.js
+		JSV/common/ScriptTokenizer.js
+		JSV/common/SubSpecChangeEvent.js
+		JSV/common/ViewData.js
+		JSV/common/XYScaleConverter.js 
+		JSV/common/ZoomEvent.js
+		JSV/dialog/JSVDialog.js
+		JSV/exception/JSVException.js
+		JSV/js2d/Display.js
+		JSV/js2d/Image.js
+		JSV/js2d/JsFile.js
+		JSV/js2d/JsFileHelper.js
+		JSV/js2d/JsFont.js
+		JSV/js2d/JsG2D.js
+		JSV/js2d/JsPanel.js
+		JSV/js2d/JsParameters.js
+		JSV/js2d/JsPlatform.js
+		JSV/js2d/JsMainPanel.js
+		JSV/source/JDXDataObject.js 
+		JSV/source/JDXDecompressor.js
+		JSV/source/JDXHeader.js 
+		JSV/source/JDXReader.js
+		JSV/source/JDXSource.js
+		JSV/source/JDXSourceStreamTokenizer.js
+		JSV/tree/SimpleTree.js
+		JSV/tree/SimpleTreeEnumeration.js
+		JSV/tree/SimpleTreeModel.js
+		JSV/tree/SimpleTreeNode.js
+		JSV/tree/SimpleTreePath.js
+    	" />
+   	
+    <antcall target="call-core">
+        <param name="call-core.name" value="jmol" />
+        <param name="call-core.list" value="
+       		../../../Jmol.properties
+       		../js/JSmolJavaExt.js
+       		../js/core/coretop.js
+         	${javaCoreFiles}
+        	${jmolCoreFiles}
+       		../js/core/corebottom.js
+        	" />
+    </antcall>
+   	<antcall target="call-corechop">
+	   	<param name="call-corechop.name" value="jmol" />
+    </antcall>
+    <antcall target="call-core">
+        <param name="call-core.name" value="jsv" />
+        <param name="call-core.list" value="
+       		../../../Jmol.properties
+       		../js/JSmolJavaExt.js
+       		../js/core/coretop.js
+         	${javaCoreFiles}
+        	JU/DefaultLogger.js
+        	JU/Logger.js
+        	JU/LoggerInterface.js
+        	${jsvCoreFiles}
+       		../js/core/corebottom.js
+    	" />
+    	
+    </antcall>
+
+    <antcall target="call-core">
+        <param name="call-core.name" value="astex" />
+        <param name="call-core.list" value="
+       		../../../Jmol.properties
+       		../js/JSmolJavaExt.js
+       		../js/core/coretop.js
+         	${javaCoreFiles}
+         	${astexCoreFiles}     	
+       		../js/core/corebottom.js
+    	" />
+    	
+    </antcall>
+
+<!--          	${javaCoreFiles}
+        	JU/DefaultLogger.js
+        	JU/Logger.js
+        	JU/LoggerInterface.js
+  fs       	${astexCoreFiles}
+-->
+   	
+   	
+    <antcall target="call-core">
+        <param name="call-core.name" value="jmoljsv" />
+        <param name="call-core.list" value="
+       		../../../Jmol.properties
+       		../js/JSmolJavaExt.js
+       		../js/core/coretop.js
+         	${javaCoreFiles}
+        	${jmolCoreFiles}
+        	${jsvCoreFiles}
+       		../js/core/corebottom.js
+    	" />
+    </antcall>
+   	<antcall target="call-corechop">
+	   	<param name="call-corechop.name" value="jmoljsv" />
+    </antcall>
+
+    <antcall target="call-core">
+        <param name="call-core.name" value="jsvmenu" />
+        <param name="call-core.list" value="
+       		../js/JSmolMenu.js
+        	javajs/api/GenericMenuInterface.js
+        	JSV/api/JSVPopupMenu.js
+        	JSV/js2d/JsPopup.js
+        	JSV/popup/JSVGenericPopup.js
+        	JSV/popup/JSVPopupResourceBundle.js
+    	" />
+    </antcall>
+
+    <antcall target="call-core">
+        <param name="call-core.name" value="jsvdialog" />
+        <param name="call-core.list" value="
+        	JSV/dialog/IntegrationDialog.js        	
+        	JSV/dialog/PeakListDialog.js
+    	    JSV/dialog/MeasurementsDialog.js
+        	JSV/dialog/OverlayLegendDialog.js
+        	JSV/dialog/ViewsDialog.js
+        	JSV/js2d/JsDialogManager.js
+        	JSV/dialog/DialogManager.js
+        	JSV/js2d/DialogTableModel.js
+        	JSV/js2d/JsDialog.js
+        	JSV/api/PlatformDialog.js
+    	" />
+    </antcall>
+
+    <antcall target="call-core">
+        <param name="call-core.name" value="jsvexport" />
+        <param name="call-core.list" value="
+        	JSV/export/Exporter.js
+        	JSV/api/ExportInterface.js
+        	JSV/api/JSVExporter.js
+        	JSV/api/JSVPdfWriter.js
+        	JSV/common/PDFWriter.js
+        	javajs/export/PDFCreator.js
+        	javajs/export/PDFObject.js
+        	java/util/zip/Deflater.js
+        	java/util/zip/DeflaterOutputStream.js
+        	JU/Deflater.js
+        	JU/DeflaterOutputStream.js
+        	JU/ZStream.js
+        	JU/Deflate.js
+        	java/io/FilterOutputStream.js
+        	JU/Adler32.js
+        	JU/Tree.js
+        	JU/CRC32.js
+        	JU/GZIPHeader.js
+        	JU/StaticTree.js
+        	JU/Checksum.js
+    	" />
+    </antcall>
+        	
+
+   	   	
+   	<!-- minimize JSmol JavaScript -->
+   	
+   	<echo>...creating JSmol.min.js -- the standard set, including jQuery</echo>
+    <antcall target="call-min">
+        <param name="call-min.fullname" value="full" />
+        <param name="call-min.minname" value="min" />
+        <param name="call-min.list" value="
+       		../lib/jquery/jquery.js
+       		JSmoljQueryExt.js
+       		JSmolCore.js
+      		JSmolDebugOff.js
+       		JSmol.js
+       		JSmolApplet.js
+       		JSmolControls.js
+       		JSmolApi.js
+       		j2sjmol.js
+       		../Jmol.properties
+        " />
+    </antcall>
+
+   	<echo>...back to making more j2s/core files</echo>
+    <antcall target="call-core">
+        <param name="call-core.name" value="binary" />
+        <param name="call-core.list" value="
+       		java/io/PushbackInputStream.js
+       		java/io/DataInputStream.js
+       		JU/BC.js
+       		JU/BinaryDocument.js
+        	" />
+    </antcall>
+   	
+   	
+    <antcall target="call-core">
+        <param name="call-core.name" value="zip" />
+        <param name="call-core.list" value="
+       		java/io/PushbackInputStream.js
+       		java/io/FileInputStream.js
+       		java/util/zip/CheckedInputStream.js
+       		java/util/zip/Inflater.js
+       		java/util/zip/ZipException.js
+       		java/util/zip/ZipConstants.js
+       		java/util/zip/ZipEntry.js
+       		java/util/zip/ZipConstants64.js
+       		java/util/zip/ZipInputStream.js
+       		java/util/zip/CRC32.js
+       		java/util/zip/InflaterInputStream.js
+       		java/util/zip/GZIPInputStream.js
+       		javajs/api/GenericZipInputStream.js
+        	JU/ZipTools.js
+       		JU/Checksum.js
+       		JU/CRC32.js
+       		JU/InflaterInputStream.js
+       		JU/ZStream.js
+       		JU/Inflater.js
+       		JU/Adler32.js
+       		JU/Tree.js
+       		JU/StaticTree.js
+       		JU/GZIPHeader.js
+       		JU/Inflate.js
+       		JU/InfTree.js
+       		JU/InfBlocks.js
+       		JU/InfCodes.js
+       		J/io/JmolUtil.js
+        	" />
+    </antcall>
+   	
+    <antcall target="call-core">
+        <param name="call-core.name" value="script" />
+        <param name="call-core.list" value="
+        	J/api/JmolParallelProcessor.js
+        	J/api/JmolScriptEvaluator.js
+        	J/api/JmolScriptFunction.js
+        	J/api/JmolScriptManager.js
+        	JS/CommandWatcherThread.js
+        	JS/FileLoadThread.js
+        	JS/JmolCmdExtension.js
+        	JS/JmolMathExtension.js
+        	JS/JmolSmilesExtension.js
+        	JS/ScriptCompiler.js
+        	JS/ScriptDelayThread.js
+        	JS/ScriptError.js
+        	JS/ScriptEval.js 
+        	JS/ScriptExpr.js 
+        	JS/ScriptFlowContext.js
+        	JS/ScriptFunction.js
+        	JS/ScriptInterruption.js
+        	JS/ScriptManager.js
+        	JS/ScriptMathProcessor.js
+        	JS/ScriptParallelProcessor.js
+        	JS/ScriptParam.js
+        	JS/ScriptProcess.js
+        	JS/ScriptProcessRunnable.js
+        	JS/ScriptQueueThread.js
+        	JS/ScriptTokenParser.js
+        	" />
+    </antcall>
+
+    <antcall target="call-core">
+        <param name="call-core.name" value="scriptcmd" />
+        <param name="call-core.list" value="
+       		JS/CmdExt.js
+        	" />
+    </antcall>
+
+    <antcall target="call-core">
+        <param name="call-core.name" value="scriptmath" />
+        <param name="call-core.list" value="
+       		JS/MathExt.js
+        	" />
+    </antcall>
+
+    <antcall target="call-core">
+        <param name="call-core.name" value="state" />
+        <param name="call-core.list" value="
+       		JV/JmolStateCreator.js
+       		JV/StateCreator.js
+        	" />
+    </antcall>
+
+    <antcall target="call-core">
+        <param name="call-core.name" value="prop" />
+        <param name="call-core.list" value="
+       		J/api/JmolPropertyManager.js
+       		JV/PropertyManager.js   	   	
+        	" />
+    </antcall>
+   	
+    <antcall target="call-core">
+        <param name="call-core.name" value="console" />
+        <param name="call-core.list" value="
+       		../js/JSmolConsole.js
+       		J/console/GenericTextArea.js
+       		J/console/GenericConsole.js
+       		J/consolejs/AppletConsole.js   	   	  	   	
+        	" />
+    </antcall>
+   	
+    <antcall target="call-core">
+        <param name="call-core.name" value="menu" />
+        <param name="call-core.list" value="
+       		../js/JSmolMenu.js
+       		J/popup/MainPopupResourceBundle.js
+       		J/popup/JmolGenericPopup.js
+       		J/awtjs2d/JmolJSPopup.js
+        	" />
+    </antcall>
+   	
+    <antcall target="call-core">
+        <param name="call-core.name" value="swing" />
+        <param name="call-core.list" value="
+        javajs/awt/BorderLayout.js
+        javajs/awt/Component.js
+        javajs/awt/Container.js
+        javajs/awt/LayoutManager.js
+        javajs/awt/event/ActionEvent.js
+        javajs/awt/event/ItemEvent.js
+        javajs/swing/AbstractButton.js
+        javajs/swing/AbstractTableModel.js
+        javajs/swing/ButtonGroup.js
+        javajs/swing/Cell.js
+        javajs/swing/ColumnSelectionModel.js
+        javajs/swing/Document.js
+        javajs/swing/FlowLayout.js
+        javajs/swing/Grid.js
+        javajs/swing/GridBagConstraints.js
+        javajs/swing/GridBagLayout.js
+        javajs/swing/Insets.js
+        javajs/swing/JButton.js
+        javajs/swing/JCheckBox.js
+        javajs/swing/JCheckBoxMenuItem.js
+        javajs/swing/JComboBox.js
+        javajs/swing/JComponent.js
+        javajs/swing/JComponentImp.js
+        javajs/swing/JContentPane.js
+        javajs/swing/JDialog.js
+        javajs/swing/JEditorPane.js
+        javajs/swing/JLabel.js
+        javajs/swing/JMenu.js
+        javajs/swing/JMenuItem.js
+        javajs/swing/JPanel.js
+        javajs/swing/JPopupMenu.js
+        javajs/swing/JRadioButtonMenuItem.js
+        javajs/swing/JScrollPane.js
+        javajs/swing/JSplitPane.js
+        javajs/swing/JTable.js
+        javajs/swing/JTextField.js
+        javajs/swing/JTextPane.js
+        javajs/swing/ListSelectionModel.js
+        javajs/swing/SwingConstants.js
+        javajs/swing/TableCellRenderer.js
+        javajs/swing/TableColumn.js
+    	J/popup/GenericSwingPopup.js
+        J/popup/PopupResource.js
+    	J/popup/JSSwingPopupHelper.js
+        J/popup/PopupHelper.js
+        	" />
+    </antcall>
+   	
+    <antcall target="call-core">
+        <param name="call-core.name" value="min" />
+        <param name="call-core.list" value="
+       		J/api/MinimizerInterface.js
+       		JM/Minimizer.js
+       		JM/MinObject.js
+       		JM/MinAngle.js
+       		JM/MinAtom.js
+       		JM/MinBond.js
+       		JM/MinTorsion.js
+       		JM/Util.js
+       		JM/FF/AtomType.js
+       		JM/FF/ForceField.js
+       		JM/FF/ForceFieldMMFF.js
+       		JM/FF/ForceFieldUFF.js
+       		JM/FF/Calculation.js
+       		JM/FF/Calculations.js
+       		JM/FF/CalculationsMMFF.js
+       		JM/FF/CalculationsUFF.js
+       		JM/FF/MMFFAngleCalc.js
+       		JM/FF/MMFFDistanceCalc.js
+       		JM/FF/MMFFESCalc.js
+       		JM/FF/MMFFOOPCalc.js
+       		JM/FF/MMFFSBCalc.js
+       		JM/FF/MMFFTorsionCalc.js
+       		JM/FF/MMFFVDWCalc.js
+       		JM/FF/UFFAngleCalc.js
+       		JM/FF/UFFDistanceCalc.js
+       		JM/FF/UFFOOPCalc.js
+       		JM/FF/UFFTorsionCalc.js
+       		JM/FF/UFFVDWCalc.js
+       		JM/FF/FFParam.js
+       		JM/MinimizationThread.js
+        	" />
+    </antcall>
+   	
+    <antcall target="call-core">
+        <param name="call-core.name" value="bio" />
+        <param name="call-core.list" value="
+       		J/adapter/readers/pdb/PdbReader.js
+       		J/adapter/smarter/Structure.js
+       		J/api/JmolBioResolver.js
+       		JM/Resolver.js
+       		JM/Monomer.js
+       		JM/AlphaMonomer.js
+       		JM/ProteinStructure.js
+       		JM/Helix.js
+       		JM/Sheet.js
+       		JM/Turn.js
+       		JM/BioPolymer.js
+       		JM/AlphaPolymer.js
+       		JM/AminoMonomer.js
+       		JM/AminoPolymer.js
+       		JM/BioModel.js
+       		JM/CarbohydrateMonomer.js
+       		JM/CarbohydratePolymer.js
+       		JM/PhosphorusMonomer.js
+       		JM/BasePair.js
+       		JM/NucleicMonomer.js
+       		JM/NucleicPolymer.js
+       		JM/BasePair.js
+       		JM/PhosphorusPolymer.js
+       		J/dssx/Bridge.js
+        	J/api/DSSPInterface.js
+       		J/dssx/DSSP.js        	
+        	J/shapebio/BioShape.js
+       		J/shapebio/BioShapeCollection.js
+       		J/shapebio/Rockets.js
+       		J/shapebio/Cartoon.js
+       		J/shapebio/Backbone.js
+       		J/shapebio/Strands.js
+       		J/shapebio/Ribbons.js
+       		J/shapebio/MeshRibbon.js
+       		J/shapebio/Trace.js
+       		J/renderbio/BioShapeRenderer.js
+       		J/renderbio/StrandsRenderer.js
+       		J/renderbio/RibbonsRenderer.js
+       		J/renderbio/MeshRibbonRenderer.js
+       		J/renderbio/RocketsRenderer.js
+       		J/renderbio/CartoonRenderer.js
+       		J/renderbio/BackboneRenderer.js
+       		J/renderbio/TraceRenderer.js        	
+        	" />
+    </antcall>
+   	
+    <antcall target="call-core">
+        <param name="call-core.name" value="surface" />
+        <param name="call-core.list" value="
+    		JU/Triangulator.js
+    		JU/TriangleData.js
+       		J/api/VolumeDataInterface.js
+       		J/jvxl/api/VertexDataServer.js
+       		J/jvxl/api/MeshDataServer.js
+       		J/shapesurface/Isosurface.js
+       		J/jvxl/data/JvxlCoder.js
+       		J/jvxl/data/VolumeData.js
+       		J/jvxl/data/JvxlData.js
+       		J/jvxl/data/MeshData.js
+       		J/jvxl/readers/XmlReader.js
+       		J/jvxl/readers/SurfaceGenerator.js
+       		J/jvxl/readers/Parameters.js
+       		J/jvxl/readers/SurfaceReader.js
+       		J/jvxl/calc/MarchingCubes.js
+       		J/jvxl/calc/MarchingSquares.js
+       		J/shapesurface/IsosurfaceMesh.js
+       		J/jvxl/readers/VolumeDataReader.js
+       		J/jvxl/readers/AtomDataReader.js
+       		J/jvxl/readers/IsoSolventReader.js
+       		J/jvxl/readers/SurfaceFileReader.js
+       		J/jvxl/readers/VolumeFileReader.js
+       		J/jvxl/readers/JvxlXmlReader.js
+       		J/rendersurface/IsosurfaceRenderer.js
+        	" />
+    </antcall>
+   	
+    <antcall target="call-core">
+        <param name="call-core.name" value="sym" />
+        <param name="call-core.list" value="
+            J/adapter/smarter/XtalSymmetry.js
+       		J/api/SymmetryInterface.js
+       		JS/Symmetry.js
+       		JS/PointGroup.js
+       		JS/SpaceGroup.js
+       		JS/HallInfo.js
+       		JS/HallRotationTerm.js
+       		JS/HallRotation.js
+       		JS/HallTranslation.js
+       		JS/SymmetryOperation.js
+       		JS/SymmetryInfo.js
+       		JS/UnitCell.js
+        	" />
+    </antcall>
+
+    <antcall target="call-core">
+        <param name="call-core.name" value="pymol" />
+        <param name="call-core.list" value="
+       		J/api/JmolSceneGenerator.js
+       		J/adapter/readers/pymol/PickleReader.js
+       		J/api/PymolAtomReader.js
+       		J/adapter/readers/pymol/PyMOL.js
+       		J/adapter/readers/pymol/JmolObject.js
+       		J/adapter/readers/pymol/PyMOLGroup.js
+       		J/adapter/readers/pymol/PyMOLScene.js
+       		J/adapter/readers/pymol/PyMOLReader.js
+        	" />
+    </antcall>
+
+   	
+    <antcall target="call-core">
+        <param name="call-core.name" value="text" />
+        <param name="call-core.list" value="
+       		JM/Object2d.js
+       		JM/Text.js
+       		J/shape/Object2dShape.js
+       		J/shape/TextShape.js
+       		J/shape/Labels.js
+       		J/shape/Measures.js
+       		J/shape/Echo.js
+       		J/shape/Hover.js
+       		J/render/TextRenderer.js
+        	J/render/LabelsRenderer.js
+        	J/render/MeasuresRenderer.js
+       		J/render/EchoRenderer.js
+       		J/render/HoverRenderer.js
+        	" />
+    </antcall>
+
+   	
+    <antcall target="call-core">
+        <param name="call-core.name" value="smiles" />
+        <param name="call-core.list" value="
+   		JS/VTemp.js
+   		J/api/SmilesMatcherInterface.js
+   		JS/SmilesMatcher.js
+   		JS/InvalidSmilesException.js
+   		JS/SmilesSearch.js
+   		JS/SmilesGenerator.js
+   		JS/SmilesAromatic.js
+   		JS/SmilesAtom.js
+   		JS/SmilesBond.js
+   		JS/SmilesMeasure.js
+   		JS/SmilesParser.js
+        JS/SmilesExt.js
+    	" />
+    </antcall>
+
+   	<!-- minimize additional JSmol JavaScript -->
+
+   	<echo>JSmol.min.nojq.js is the standard set but does not include jQuery</echo>
+    <antcall target="call-min">
+        <param name="call-min.fullname" value="full.nojq" />
+        <param name="call-min.minname" value="min.nojq" />
+        <param name="call-min.list" value="
+   		JSmoljQueryExt.js
+   		JSmolCore.js
+   		JSmolDebugOff.js
+   		JSmol.js
+   		JSmolApplet.js
+   		JSmolControls.js
+   		JSmolApi.js
+   		j2sjmol.js
+        ../Jmol.properties
+   		" />
+    </antcall>
+   	<!--
+   	   	<echo>JSmol.min.core.js includes JSmol.min.js and core.z.js</echo>
+   	   	<concat destfile="site/jsmol/JSmol.min.core.js"><filelist dir="site/jsmol" files="
+   	   		JSmol.min.js
+   	   		j2s/core/core.z.js 
+   	   		" />
+   	   	</concat>
+   	-->
+
+   	<echo>...JSmol.lite.js is a very minimal non-Jmol viewer; includes jQuery</echo>
+    <antcall target="call-min">
+        <param name="call-min.fullname" value="full.lite" />
+        <param name="call-min.minname" value="lite" />
+        <param name="call-min.list" value="
+       		../lib/jquery/jquery.js
+       		JSmoljQueryExt.js
+      		JSmolCore.js
+       		JSmolDebugOff.js
+      		JSmolTM.js
+   		" />
+    </antcall>
+   	
+   	<echo>...JSmol.lite.nojq.js is a very minimal non-Jmol viewer, without jQuery</echo>
+    <antcall target="call-min">
+        <param name="call-min.fullname" value="full.lite.nojq" />
+        <param name="call-min.minname" value="lite.nojq" />
+        <param name="call-min.list" value="
+       		JSmoljQueryExt.js
+      		JSmolCore.js
+       		JSmolDebugOff.js
+      		JSmolTM.js
+   		" />
+    </antcall>
+   	
+   	<echo>...JSmol.GLmol.min.js contains GLmol and THREE</echo>
+    <antcall target="call-min">
+        <param name="call-min.fullname" value="GLmol.full" />
+        <param name="call-min.minname" value="GLmol.min" />
+        <param name="call-min.list" value="
+       		JSmolTHREE.js
+       		JSmolGLmol.js
+        " />
+    </antcall>
+
+   	<echo>creating distribution zip file jsmol.zip and copying it to Jmol</echo>
+  	<delete file="dist/*" />
+    <zip zipfile="dist/jsmol.zip" basedir="site" includes="**" />
+   	<copy file="dist/jsmol.zip" tofile="${jmol.path}/appletweb/jsmol.zip" />
+ 	<delete file="temp.js" />
+   	<copy file="README-DOWNLOAD.TXT" tofile="dist/README.TXT" />
+   	<echo>${jmol.path}/appletweb/jsmol.zip has been updated. 
+   		site/jsmol is available for testing</echo>
+  </target>
+
+
+  <target name="call-core" id="call-core">
+   	<echo>......Creating core${call-core.name}.js</echo> 	
+   	<concat destfile="site/jsmol/js/core${call-core.name}.js">
+   		<filelist dir="site/jsmol/j2s" files="${call-core.list}" />
+   	</concat> 
+  	<copy file="site/jsmol/js/core${call-core.name}.js" tofile="site/jsmol/js/core2.js" />
+  	<!--
+	   	<echo>...removing unnecessary Clazz.defineStatics blocks</echo>
+  	  This next replacement does not work, because the j2s compiler does not 
+  	  distinguish between final and non-final static variable.
+  	  We will have to do this on a case-by-case basis. 
+  	   
+  	<replaceregexp file="site/jsmol/js/core2.js" match="(Clazz.defineStatics ?\(((?![\[\(]).)*?\);)" flags="gs" replace="/*\1*/" /> 
+  	<copy file="site/jsmol/js/core2.js" tofile="site/jsmol/js/core${call-core.name}3.js" />
+  	 -->
+
+  	<replace dir="site/jsmol/js" includes="core2.js" token="Clazz." value="Clazz_"/>
+  	<replace dir="site/jsmol/js" includes="core2.js" token="Clazz__" value="Clazz._"/>
+  	<replace dir="site/jsmol/js" includes="core2.js" token="($fz = " value=""/>
+  	<replace dir="site/jsmol/js" includes="core2.js" token=", $fz.isPrivate = true, $fz)" value=""/> 	
+   	<concat destfile="site/jsmol/js/core${call-core.name}.js"><filelist dir="site/jsmol/js" files="
+   		core/coretop2.js
+   		core2.js
+   		core/corebottom2.js
+   		" />
+   	</concat>
+   	<echo>......Generating core${call-core.name}.z.js</echo> 	
+   	<java jar="jars/closure_compiler.jar" fork="true" dir="site/jsmol/js" failonerror="false">
+   		<arg line="--js core${call-core.name}.js --js_output_file ../j2s/core/core${call-core.name}.z.js" />
+    </java>
+  </target>
+
+  <target name="call-corechop" id="call-corechop">
+  	<!-- case-by-case removal of final static defs. Captures about 40 KB -->
+	<echo>Trimming unneeded final static definitions core${call-corechop.name}.js</echo>
+  	<replaceregexp file="site/jsmol/j2s/core/core${call-corechop.name}.z.js" match='\,"nada"\,.*?\)' flags="s" replace=")"/>
+  	<replaceregexp file="site/jsmol/j2s/core/core${call-corechop.name}.z.js" match='\,"ACTION_.*?\)' flags="s" replace=")"/>
+  	<replaceregexp file="site/jsmol/j2s/core/core${call-corechop.name}.z.js" match='\,"PICKING_.*?\)' flags="s" replace=")"/>
+  	<!-- -->
+   </target>
+	
+	
+  <target name="call-min" id="call-min">
+   	<echo>......Creating JSmol.${call-min.minname}.js</echo> 	
+   	<concat destfile="site/jsmol/js/JSmol.${call-min.fullname}.js">
+   		<filelist dir="jsmoljs" files="${call-min.list}" />
+   	</concat>   
+   	<java jar="jars/closure_compiler.jar" fork="true" dir="" failonerror="false">
+   		<arg line="--js site/jsmol/js/JSmol.${call-min.fullname}.js --js_output_file site/jsmol/JSmol.${call-min.minname}.js" />
+    </java>
+  </target>
+	
+
+
+	
+</project>

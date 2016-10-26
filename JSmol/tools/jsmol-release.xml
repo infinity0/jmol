@@ -1,0 +1,79 @@
+<project name="Jmol releases" default="deploy" basedir="..">
+
+  <!--
+    To use this script, the scp task must be available.
+    The scp task requires the jsch jar in the class path.
+  -->
+
+  <!-- Contributions -->
+  <taskdef resource="net/sf/antcontrib/antlib.xml">
+    <classpath>
+      <pathelement location="../jmol/tools/ant-contrib.jar" />
+    </classpath>
+  </taskdef>
+
+  <property name="dist.dir"        value="dist" />
+  <property name="src.dir"         value="src" />
+  <property name="temp.dir"        value="build" />
+  <property name="web.dir"         value="/home/frs/project/j/js/jsmol" />
+  <property name="web.host"        value="frs.sourceforge.net" />
+  <property name="path.release"    value="release" />
+  <property name="prefix.release"  value="jsmol-" />
+
+  <property file="Jmol.properties" prefix="Jmol.properties" />
+  <property name="version" value="${Jmol.properties.___JmolVersion}" />
+  <propertyregex property="version"
+  			  override = "true"
+	          input="${version}"
+  			  regexp='"'
+	          replace=""
+  		      global="true"
+	          />
+  <echo message="version=${version}" />
+
+  <!-- Copying files to website -->
+  <target name="deploy" >
+
+    <!-- Ask user for confirmation -->
+    <input
+      message="Do you really want to copy files to ${path.release}/${prefix.release}${version} (y/n) ?"
+      validargs="y,n"
+      addproperty="do.scp"
+    />
+    <condition property="do.abort">
+      <equals arg1="n" arg2="${do.scp}"/>
+    </condition>
+    <fail if="do.abort">Build aborted by user.</fail>
+
+    <!-- Ask user for username and password -->
+    <input
+      message="Please enter username:"
+      addproperty="ssh.user"
+    />
+    <input
+      message="Please enter password:"
+      addproperty="ssh.password"
+    />
+
+    <!-- Prepare temporary image -->
+    <delete dir="${temp.dir}" />
+    <mkdir dir="${temp.dir}" />
+    <mkdir dir="${temp.dir}/${prefix.release}${version}" />
+    <copy todir="${temp.dir}/${prefix.release}${version}"
+          file="${dist.dir}/jsmol.zip" />
+    <move file="${temp.dir}/${prefix.release}${version}/jsmol.zip" tofile="${temp.dir}/${prefix.release}${version}/jsmol-${version}.zip" />
+
+    <!-- Do the copy using scp -->
+    <echo message="Copying release files to http://sourceforge.net/projects/jsmol/files/" level="info"/>
+    <scp todir="${ssh.user},jmol:${ssh.password}@${web.host}:${web.dir}"
+         trust="yes" failonerror="true">
+      <fileset dir="${temp.dir}">
+        <include name="**/*"/>
+      </fileset>
+    </scp>
+
+  	<!-- Cleanup -->
+    <delete dir="${temp.dir}"/>
+  </target>
+
+</project>
