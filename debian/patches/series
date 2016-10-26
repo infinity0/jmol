@@ -1,0 +1,5 @@
+# we already did this in make-orig-tarball.sh but will need to re-enable it if
+# upstream doesn't agree with that
+#jsmol-reenable-jmol-import.patch
+debian-system-jars.patch
+debian-system-docbook.patch

@@ -1,0 +1,202 @@
+--- a/Jmol/build.xml
++++ b/Jmol/build.xml
+@@ -113,6 +113,7 @@
+   <property name="tests.dir" value="build/unit.tests" />
+   <property name="javadoc.dir" value="build/javadoc" />
+   <property name="jmol.applet.web.dir" value="appletweb" />
++  <property name="netscape.jar.path" value="${lib.dir}/netscape.jar" />
+   <property name="docbook-xsl" value="docbook-xsl-1.76.1" />
+   <property name="docbook-xml" value="docbook-xml-4.4" />
+   <property name="naga.jar" value="naga-3_0.jar" />
+@@ -141,24 +142,37 @@
+ 
+   <path id="project.class.path">
+     <fileset dir="${lib.dir}">
+-      <include name="*.jar" />
++      <include name="commons-cli.jar" />
++      <include name="naga-3_0.jar" />
+     </fileset>
++    <fileset file="jars/JSpecView.jar" />
++    <fileset file="${netscape.jar.path}" />
+   </path>
+   
+   <path id="applet-project.class.path">
+     <fileset dir="${lib.dir}">
+-      <include name="*.jar" />
++      <include name="commons-cli.jar" />
++      <include name="naga-3_0.jar" />
+     </fileset>
++    <fileset file="jars/JSpecView.jar" />
++    <fileset file="${netscape.jar.path}" />
+   </path>
+   
+   <path id="apisio-project.class.path">
+     <fileset dir="${lib.dir}">
+       <!-- include name="${vecmath.jar}" / -->
+-      <include name="netscape.jar" />
+       <include name="gnujaxp.jar" />
+     </fileset>
++    <fileset file="jars/JSpecView.jar" />
++    <fileset file="${netscape.jar.path}" />
+   </path>
+ 
++  <property name="lib.loc" location="${lib.dir}" />
++  <pathconvert property="lib.jars.classpath" refid="project.class.path" pathsep=" ">
++    <map from="${lib.loc}/" to=""/>
++    <map from="${basedir}/jars/" to=""/>
++  </pathconvert>
++
+   <target name="main" id="main" depends="init,jar,applet-jar,signed-applet,smiles-applet-jar"/>
+   
+   <target name="all" id="all" depends="doc,main"/>
+@@ -437,7 +451,7 @@
+         <uptodate targetfile="${appjars.dir}">
+           <srcfiles dir="${lib.dir}" includes="${naga.jar}"/>
+           <srcfiles dir="${lib.dir}" includes="${commons-cli.jar}"/>
+-          <srcfiles dir="${lib.dir}" includes="JSpecView.jar"/>
++          <srcfiles dir="jars" includes="JSpecView.jar"/>
+         </uptodate>
+         <uptodate targetfile="build/libjars.timestamp"
+                   srcfile="${appjars.dir}"/>
+@@ -470,7 +484,7 @@
+     <!-- unjar dest="${appjars.dir}" src="${lib.dir}/${itext.jar}"/ -->
+     <unjar dest="${appjars.dir}" src="${lib.dir}/${naga.jar}"/>
+     <unjar dest="${appjars.dir}" src="${lib.dir}/${commons-cli.jar}"/>
+-    <unjar dest="${appjars.dir}" src="${lib.dir}/JSpecView.jar"/>
++    <unjar dest="${appjars.dir}" src="jars/JSpecView.jar"/>
+   	<delete dir="${appjars.dir}/javajs" />
+   	<delete dir="${appjars.dir}/org/jmol" />
+   	<delete dir="${appjars.dir}/META-INF" />
+@@ -516,7 +530,7 @@
+         <include name="**/jmol/**" />
+         <exclude name="**/app/JmolData.class" />
+       </fileset>
+-      <fileset dir="${appjars.dir}" includes="**/*"/>
++      <manifest><attribute name="Class-Path" value="${lib.jars.classpath}" /></manifest>
+       <fileset dir="src/org/jmol/translation/Jmol" includes="Messages*.class"/>
+       <fileset dir="src/org/jmol/translation/JmolApplet" includes="Messages*.class"/>
+     </jar>
+@@ -551,7 +565,7 @@
+         <exclude name="**/openscience/jmol/app/jmolpanel/**" />
+         <exclude name="**/openscience/jmol/app/webexport/**" />
+       </fileset>
+-      <fileset dir="${appjars.dir}" includes="**/cli/** **/naga/**" />
++      <manifest><attribute name="Class-Path" value="${naga.jar} ${commons-cli.jar}" /></manifest>
+       <fileset dir="src/org/jmol/translation/Jmol" includes="Messages*.class"/>
+       <fileset dir="src/org/jmol/translation/JmolApplet" includes="Messages*.class"/>
+     </jar>
+@@ -584,7 +598,7 @@
+         <include name="org/jmol/util/**" />
+         <include name="org/jmol/viewer/JmolConstants.class" />
+       </fileset>
+-      <fileset dir="${appjars.dir}" includes="**/*"/>
++      <manifest><attribute name="Class-Path" value="${lib.jars.classpath}" /></manifest>
+     </jar>
+     <antcall target="sign-jar-file">
+       <param name="sign-jar-file-dir" value="build" />
+@@ -1411,8 +1425,8 @@
+     <copy todir="build/dist/jmolapisio-${version}/${lib.dir}" >
+       <fileset dir="${lib.dir}">
+         <!-- include name="${vecmath.jar}"/ -->
+-        <include name="netscape.jar"/>
+       </fileset>
++      <fileset file="${netscape.jar.path}" />
+     </copy>
+ 
+     <tar tarfile="build/dist/jmolapisio-${version}.tar.gz"
+@@ -1677,7 +1691,7 @@
+       <classpath>
+         <pathelement location="build/Jmol.jar" />
+         <pathelement location="${tests.dir}/Tests.jar" />
+-        <pathelement location="./jars/junit.jar" />
++        <pathelement location="${lib.dir}/junit.jar" />
+       </classpath>
+       <formatter type="plain" usefile="false" />
+       <!-- <batchtest>
+@@ -1694,7 +1708,7 @@
+            optimize="off" source="1.6" encoding="UTF8">
+       <classpath>
+         <pathelement location="build/Jmol.jar" />
+-        <pathelement location="./jars/junit.jar" />
++        <pathelement location="${lib.dir}/junit.jar" />
+       </classpath>
+     </javac>
+     <mkdir dir="${tests.dir}"/>
+--- a/JSpecView/build.xml
++++ b/JSpecView/build.xml
+@@ -42,6 +42,7 @@
+     <property name="extras.dir"         value="extras" />
+     <property name="dist.dir"           value="dist" />
+     <property name="dist.zip"           value="${dist.dir}/jspecview.zip" />
++    <property name="netscape.jar.path"  value="${lib.dir}/netscape.jar" />
+ 
+ 	<property name="selfsign.store" value="certificate/JSVcertificate.store" />
+ 	<property name="selfsign.storetype" value="jks" />
+@@ -54,7 +55,7 @@
+     </path>
+     <path id="jspecview.classpath">
+         <pathelement location="bin"/>
+-        <pathelement location="${lib.dir}/netscape.jar"/>
++        <pathelement location="${netscape.jar.path}"/>
+     	<!-- pathelement location="${lib.dir}/${itext.jar}"/ -->
+         <path refid="jspecviewlib.classpath"/>
+     </path>
+@@ -140,8 +141,8 @@
+ 			    </linecontains>
+ 			  </filterchain>
+ 	    </copy>
+-	    <unjar dest="${bin.dir}" src="${lib.dir}/netscape.jar"/>
+         <jar destfile="${build.dir}/${ant.project.name}.app.${build.number}_unsigned.jar" manifest="manifests/application.txt">
++            <manifest><attribute name="Class-Path" value="${netscape.jar.path}" /></manifest>
+ 		   	<fileset dir="${bin.dir}">
+ 		      <include name="**/*"/>
+   		      <exclude name="javajs/swing/**/*"/>
+@@ -188,8 +189,8 @@
+ 			  </filterchain>
+ 	    </copy>
+ 
+-	    <unjar dest="${bin.dir}" src="${lib.dir}/netscape.jar"/>
+         <jar destfile="${build.dir}/${ant.project.name}.applet.${build.number}_unsigned.jar" manifest="manifests/applet.txt">
++            <manifest><attribute name="Class-Path" value="${netscape.jar.path}" /></manifest>
+         	<fileset dir="${bin.dir}">
+         		<exclude name="jspecview/application/**/*"/>
+   		        <exclude name="javajs/swing/**/*"/>
+@@ -225,8 +226,8 @@
+ 	<target name="make-signed-applet-jar" depends="make-applet-jar" description="Make all-permission JSpecView applet jar">
+     <antcall target="revision" />
+         <mkdir dir="${build.dir}"/>
+-	    <unjar dest="${bin.dir}" src="${lib.dir}/netscape.jar"/>
+         <jar destfile="${build.dir}/JSpecViewAppletSigned.jar" manifest="manifests/appletSigned.txt">
++            <manifest><attribute name="Class-Path" value="${netscape.jar.path}" /></manifest>
+         	<fileset dir="${bin.dir}">
+   		      <exclude name="jspecview/application/**/*"/>
+   		      <exclude name="javajs/swing/**/*"/>
+--- a/JSmol/build_13_tojs.xml
++++ b/JSmol/build_13_tojs.xml
+@@ -259,7 +259,7 @@
+   	    <include name="**/*" />
+   	  </fileset>
+     </copy>
+-   	<java jar="jars/closure_compiler.jar" fork="true" dir="${site.path}/jquery" failonerror="false">
++   	<java jar="jars/closure-compiler.jar" fork="true" dir="${site.path}/jquery" failonerror="false">
+    		<arg line="--js jquery.js --charset UTF-8 --js_output_file jquery.min.js" />
+     </java>
+ 
+@@ -1238,7 +1238,7 @@
+ 	   		" />
+ 	   	</concat>
+ 	   	<echo>......Generating ${site.path}/j2s/core/core${call-core.name}.z.js</echo> 	
+-	   	<java jar="jars/closure_compiler.jar" fork="true" dir="${site.path}/j2s/core" failonerror="false">
++	   	<java jar="jars/closure-compiler.jar" fork="true" dir="${site.path}/j2s/core" failonerror="false">
+ 	   		<arg line="--js core${call-core.name}.js --js_output_file core${call-core.name}.z.js" />
+ 	    </java>
+ 	 	<delete quiet="true" file="${site.path}/js/core/tmp.js" />
+@@ -1259,7 +1259,7 @@
+    	<concat destfile="${site.path}/js/JSmol.${call-min.fullname}.js">
+    		<filelist dir="jsmoljs" files="${call-min.list}" />
+    	</concat>   
+-   	<java jar="jars/closure_compiler.jar" fork="true" dir="" failonerror="false">
++   	<java jar="jars/closure-compiler.jar" fork="true" dir="" failonerror="false">
+    		<arg line="--js site/jsmol/js/JSmol.${call-min.fullname}.js --js_output_file site/jsmol/JSmol.${call-min.minname}.js" />
+     </java>
+   </target>

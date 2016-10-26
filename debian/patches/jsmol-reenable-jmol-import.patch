@@ -1,0 +1,17 @@
+--- a/JSmol/build_11_fromjmol.xml
++++ b/JSmol/build_11_fromjmol.xml
+@@ -132,14 +132,12 @@
+       </fileset>
+     </copy>
+ 
+-  	<!--
+   	<echo>copying all files from ${jmol.path}/src/javajs</echo>
+     <copy overwrite="true" todir="src" >
+       <fileset dir="${jmol.path}/src">
+         <include name="javajs/**/*" />
+       </fileset>
+     </copy>
+--->
+   	
+   	<!-- copy only the essential files, excluding all classes referencing AWT and SWING -->
+   	<echo>copying selected files from ${jmol.path}/src/org/jmol</echo>

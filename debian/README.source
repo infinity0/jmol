@@ -1,0 +1,34 @@
+# Debian will additionally exclude:
+
+Dependencies, we'll link to Debian system libs instead:
+    Jmol/doc/docbook-xml-4.4.zip docbook-xml
+    Jmol/doc/docbook-xsl-1.76.1.tar.gz docbook-xsl
+    Jmol/jars/commons-cli-1.2.jar libcommons-cli-java
+    Jmol/jars/naga-3_0.jar libnaga-java
+    Jmol/jars/junit.jar junit
+    Jmol/jars/netscape.jar icedtea-netx-common
+    Jmol/jars/saxon.jar libsaxon-java
+    Jmol/tools/ant-contrib.jar ant-contrib
+    JSmol/jars/closure_compiler.jar libclosure-compiler-java
+    JSmol/jars/junit.jar junit
+    JSmol/jars/netscape.jar icedtea-netx-common
+    JSmol/j2s/eclipse_plugin/* java2script (ITP Debian)
+    JSpecView/libs/netscape.jar icedtea-netx-common
+    JSpecView/tools/ant-contrib.jar ant-contrib
+
+Not needed in Debian:
+    Jmol/tools/maven-ant-tasks-2.1.3.jar libmaven-ant-tasks-java
+    Jmol/tools/jsch.jar libjsch-java
+    Jmol/develjars/*
+
+Can't distribute in Debian (no source code, or license is not free):
+    Jmol/doc/jcfl-1.2.6-source.tar.gz
+    Jmol/screensaver/*
+    Jmol/src/com/sparshui/cpp/HPTouchSmart/*
+    Jmol/jmol.mac
+
+Test data, OK to keep:
+    JSmol/data/sage.zip
+    JSpecView/data/t3.zip
+    JSpecView/data/ta.zip
+    JSpecView/data/test.zip

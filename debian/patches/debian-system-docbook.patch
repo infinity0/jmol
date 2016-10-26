@@ -1,0 +1,217 @@
+--- a/Jmol/doc/source/JmolAppletGuide.docbook.xml
++++ b/Jmol/doc/source/JmolAppletGuide.docbook.xml
+@@ -1,6 +1,6 @@
+ <?xml version="1.0"?>
+-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+-  "../../build/docbook-xml/docbookx.dtd"
++<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
++  "/usr/share/xml/docbook/schema/dtd/4.4/docbookx.dtd"
+ [
+ <!ENTITY appletIntro        SYSTEM "applet/intro.docbook.xml">
+ <!ENTITY appletBrowsers     SYSTEM "applet/browsers.docbook.xml">
+--- a/Jmol/doc/source/JmolAppletGuide_de.docbook.xml
++++ b/Jmol/doc/source/JmolAppletGuide_de.docbook.xml
+@@ -1,5 +1,5 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "../../build/docbook-xml/docbookx.dtd" [
++<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" "/usr/share/xml/docbook/schema/dtd/4.4/docbookx.dtd" [
+ <!ENTITY appletIntro SYSTEM "applet/intro.docbook.xml">
+ <!ENTITY appletBrowsers SYSTEM "applet/browsers.docbook.xml">
+ <!ENTITY appletHardware SYSTEM "applet/hardware.docbook.xml">
+--- a/Jmol/doc/source/JmolAppletGuide_fr.docbook.xml
++++ b/Jmol/doc/source/JmolAppletGuide_fr.docbook.xml
+@@ -1,6 +1,6 @@
+ <?xml version="1.0"?>
+-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+-  "../../build/docbook-xml/docbookx.dtd"
++<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
++  "/usr/share/xml/docbook/schema/dtd/4.4/docbookx.dtd"
+ [
+ <!ENTITY appletIntro        SYSTEM "applet/intro_fr.docbook.xml">
+ <!ENTITY appletBrowsers     SYSTEM "applet/browsers_fr.docbook.xml">
+--- a/Jmol/doc/source/JmolDevelopersGuide.docbook.xml
++++ b/Jmol/doc/source/JmolDevelopersGuide.docbook.xml
+@@ -1,6 +1,6 @@
+ <?xml version="1.0"?>
+ <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+-		"../../build/docbook-xml/docbookx.dtd">
++		"/usr/share/xml/docbook/schema/dtd/4.4/docbookx.dtd">
+ 
+ <book id="jmol-devel-guide" lang="en">
+ 
+--- a/Jmol/doc/source/JmolDevelopersGuide_de.docbook.xml
++++ b/Jmol/doc/source/JmolDevelopersGuide_de.docbook.xml
+@@ -1,5 +1,5 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "../../build/docbook-xml/docbookx.dtd">
++<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" "/usr/share/xml/docbook/schema/dtd/4.4/docbookx.dtd">
+ <book id="jmol-devel-guide" lang="de">
+ 
+   <bookinfo>
+--- a/Jmol/doc/source/JmolDevelopersGuide_fr.docbook.xml
++++ b/Jmol/doc/source/JmolDevelopersGuide_fr.docbook.xml
+@@ -1,6 +1,6 @@
+ <?xml version="1.0"?>
+-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+-  "../../build/docbook-xml/docbookx.dtd"
++<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
++  "/usr/share/xml/docbook/schema/dtd/4.4/docbookx.dtd"
+ >
+ <!--
+   French translation 
+--- a/Jmol/doc/source/JmolGuide.docbook.xml
++++ b/Jmol/doc/source/JmolGuide.docbook.xml
+@@ -1,6 +1,6 @@
+ <?xml version="1.0"?>
+-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+-  "../../build/docbook-xml/docbookx.dtd"
++<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
++  "/usr/share/xml/docbook/schema/dtd/4.4/docbookx.dtd"
+ [
+ <!ENTITY guideIntro          SYSTEM "guide/intro.docbook.xml">
+ <!ENTITY guideCommandLine    SYSTEM "guide/commandline.docbook.xml">
+--- a/Jmol/doc/source/JmolGuide_de.docbook.xml
++++ b/Jmol/doc/source/JmolGuide_de.docbook.xml
+@@ -1,5 +1,5 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "../../build/docbook-xml/docbookx.dtd" [
++<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" "/usr/share/xml/docbook/schema/dtd/4.4/docbookx.dtd" [
+ <!ENTITY guideIntro SYSTEM "guide/intro.docbook.xml">
+ <!ENTITY guideCommandLine SYSTEM "guide/commandline.docbook.xml">
+ <!ENTITY guideMenus SYSTEM "guide/menus.docbook.xml">
+--- a/Jmol/doc/source/JmolGuide_fr.docbook.xml
++++ b/Jmol/doc/source/JmolGuide_fr.docbook.xml
+@@ -1,6 +1,6 @@
+ <?xml version="1.0"?>
+-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+-  "../../build/docbook-xml/docbookx.dtd"
++<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
++  "/usr/share/xml/docbook/schema/dtd/4.4/docbookx.dtd"
+ [
+ <!ENTITY guideIntro          SYSTEM "guide/intro_fr.docbook.xml">
+ <!ENTITY guideCommandLine    SYSTEM "guide/commandline_fr.docbook.xml">
+--- a/Jmol/build.xml
++++ b/Jmol/build.xml
+@@ -186,24 +186,6 @@
+   </target>
+ 
+   <target name="setup" id="setup">
+-    <condition property="docbook-xsl.uptodate">
+-      <and>
+-        <uptodate targetfile="build/${docbook-xsl}"
+-                  srcfile="doc/${docbook-xsl}.tar.gz" />
+-        <uptodate targetfile="build/${docbook-xsl}.timestamp"
+-                  srcfile="build/${docbook-xsl}" />
+-      </and>
+-    </condition>
+-
+-    <condition property="docbook-xml.uptodate">
+-      <and>
+-        <uptodate targetfile="build/docbook-xml"
+-                  srcfile="doc/${docbook-xml}.zip" />
+-        <uptodate targetfile="build/docbook-xml.timestamp"
+-                  srcfile="build/docbook-xml" />
+-      </and>
+-    </condition>
+-
+     <condition property="jmolGuide.uptodate">
+       <and>
+         <uptodate targetfile="build/doc/JmolUserGuide/index.html">
+@@ -1513,24 +1495,7 @@
+   <target name="doc" id="doc"
+           depends="jmolGuide,jmolDevelopersGuide,jmolAppletGuide,jmolHistory,javadoc"/>
+ 
+-  <target name="initdoc" depends="init,check.docbook-xml,check.docbook-xsl,check.xsl" />
+-
+-  <target name="check.docbook-xsl" depends="setup" unless="docbook-xsl.uptodate" >
+-    <delete file="build/${docbook-xsl}.timestamp" />
+-    <delete dir="build/${docbook-xsl}" />
+-    <mkdir dir="build/${docbook-xsl}" />
+-    <untar src="doc/${docbook-xsl}.tar.gz" dest="build"
+-           compression="gzip" />
+-    <touch file="build/${docbook-xsl}.timestamp" />
+-  </target>
+-
+-  <target name="check.docbook-xml" depends="setup" unless="docbook-xml.uptodate" >
+-    <delete file="build/docbook-xml.timestamp" />
+-    <delete dir="build/docbook-xml" />
+-    <mkdir dir="build/docbook-xml" />
+-    <unzip src="doc/${docbook-xml}.zip" dest="build/docbook-xml" />
+-    <touch file="build/docbook-xml.timestamp" />
+-  </target>
++  <target name="initdoc" depends="init,check.xsl" />
+ 
+   <target name="check.xsl" depends="setup" unless="xsl.available" >
+     <echo message="XSLT class '${saxon.main}' not found." />
+@@ -1563,7 +1528,7 @@
+       <jvmarg value="${proxyHost}" />
+       <jvmarg value="${proxyPort}" />
+       <arg value="../../../doc/source/JmolGuide.docbook.xml" />
+-      <arg value="../../${docbook-xsl}/html/chunk.xsl" />
++      <arg value="/usr/share/xml/docbook/stylesheet/docbook-xsl/html/chunk.xsl" />
+     </java>
+     <echo message="Generating user's guide (fr)" level="info"/>
+     <mkdir dir="build/doc/JmolUserGuide_fr" />
+@@ -1573,7 +1538,7 @@
+       <jvmarg value="${proxyHost}" />
+       <jvmarg value="${proxyPort}" />
+       <arg value="../../../doc/source/JmolGuide_fr.docbook.xml" />
+-      <arg value="../../${docbook-xsl}/html/chunk.xsl" />
++      <arg value="/usr/share/xml/docbook/stylesheet/docbook-xsl/html/chunk.xsl" />
+     </java>
+   </target>
+ 
+@@ -1632,7 +1597,7 @@
+       <arg value="-o" />
+       <arg value="JmolDevelopersGuide.html" />
+       <arg value="../../doc/source/JmolDevelopersGuide.docbook.xml" />
+-      <arg value="../${docbook-xsl}/html/docbook.xsl" />
++      <arg value="/usr/share/xml/docbook/stylesheet/docbook-xsl/html/docbook.xsl" />
+     </java>
+     <echo message="Generating developer's guide (fr)" level="info"/>
+     <java fork="true" dir="build/doc"
+@@ -1641,7 +1606,7 @@
+       <arg value="-o" />
+       <arg value="JmolDevelopersGuide_fr.html" />
+       <arg value="../../doc/source/JmolDevelopersGuide_fr.docbook.xml" />
+-      <arg value="../${docbook-xsl}/html/docbook.xsl" />
++      <arg value="/usr/share/xml/docbook/stylesheet/docbook-xsl/html/docbook.xsl" />
+     </java>
+     <echo message="Generating developer's guide (de)" level="info"/>
+     <java fork="true" dir="build/doc"
+@@ -1650,7 +1615,7 @@
+       <arg value="-o" />
+       <arg value="JmolDevelopersGuide_de.html" />
+       <arg value="../../doc/source/JmolDevelopersGuide_de.docbook.xml" />
+-      <arg value="../${docbook-xsl}/html/docbook.xsl" />
++      <arg value="/usr/share/xml/docbook/stylesheet/docbook-xsl/html/docbook.xsl" />
+     </java>
+   </target>
+ 
+@@ -1664,7 +1629,7 @@
+       <arg value="-o" />
+       <arg value="JmolAppletGuide.html" />
+       <arg value="../../doc/source/JmolAppletGuide.docbook.xml" />
+-      <arg value="../${docbook-xsl}/html/docbook.xsl" />
++      <arg value="/usr/share/xml/docbook/stylesheet/docbook-xsl/html/docbook.xsl" />
+     </java>
+     <echo message="Generating applet guide (fr)" level="info"/>
+     <java fork="true" dir="build/doc"
+@@ -1673,7 +1638,7 @@
+       <arg value="-o" />
+       <arg value="JmolAppletGuide_fr.html" />
+       <arg value="../../doc/source/JmolAppletGuide_fr.docbook.xml" />
+-      <arg value="../${docbook-xsl}/html/docbook.xsl" />
++      <arg value="/usr/share/xml/docbook/stylesheet/docbook-xsl/html/docbook.xsl" />
+     </java>
+     <echo message="Generating applet guide (de)" level="info"/>
+     <java fork="true" dir="build/doc"
+@@ -1682,7 +1647,7 @@
+       <arg value="-o" />
+       <arg value="JmolAppletGuide_de.html" />
+       <arg value="../../doc/source/JmolAppletGuide_de.docbook.xml" />
+-      <arg value="../${docbook-xsl}/html/docbook.xsl" />
++      <arg value="/usr/share/xml/docbook/stylesheet/docbook-xsl/html/docbook.xsl" />
+     </java>
+   </target>
+ 

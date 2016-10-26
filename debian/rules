@@ -1,0 +1,29 @@
+#!/usr/bin/make -f
+
+#%:
+#	dh $@
+
+JSV_TOOLS = ant-contrib.jar
+JMOL_TOOLS = ant-contrib.jar
+JSMOL_JARS = closure-compiler.jar junit.jar
+
+configure:
+	mkdir -p JSpecView/tools
+	for i in $(JSV_TOOLS); do ln -sf -T /usr/share/java/$$i JSpecView/tools/$$i; done
+	mkdir -p Jmol/tools
+	for i in $(JMOL_TOOLS); do ln -sf -T /usr/share/java/$$i Jmol/tools/$$i; done
+	mkdir -p JSmol/jars
+	for i in $(JSMOL_JARS); do ln -sf -T /usr/share/java/$$i JSmol/jars/$$i; done
+
+JSV_FLAGS    := -Dnetscape.jar.path=/usr/share/icedtea-web/plugin.jar
+JMOL_FLAGS   := -Dnetscape.jar.path=/usr/share/icedtea-web/plugin.jar \
+                -Dlib.dir=/usr/share/java -Dcommons-cli.jar=commons-cli.jar
+
+export JSV_FLAGS JMOL_FLAGS
+
+build: configure
+
+build test clean:
+	$(MAKE) $@
+
+.PHONY: configure build test clean
