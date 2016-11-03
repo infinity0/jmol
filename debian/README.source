@@ -26,6 +26,9 @@ Can't distribute in Debian (no source code, or license is not free):
     Jmol/screensaver/*
     Jmol/src/com/sparshui/cpp/HPTouchSmart/*
     Jmol/jmol.mac
+    JSmol/lib/jsme/* Author confirmed non-free
+        Peter Ertl <peter.ertl@gmail.com>
+        "The underlying Java source is unfortunately due to various legacy legal reasons not available."
 
 Test data, OK to keep:
     JSmol/data/sage.zip
